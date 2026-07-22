@@ -3,7 +3,12 @@
 GenU から外部の生成 AI API を呼び出して画像・動画を生成する拡張機能のセットアップ手順です。
 
 - [Gemini 画像・動画生成](#gemini-画像動画生成): Google の Gemini API を使用 (Workload Identity Federation 認証、API キー不要)
+<img width="1413" height="1173" alt="image" src="https://github.com/user-attachments/assets/ca92a952-1c53-4e31-a25d-c20ed2f8cd60" />
+<img width="1385" height="1168" alt="image" src="https://github.com/user-attachments/assets/28eb892a-4c25-4d1e-93ba-c2b6eee1377f" />
+
 - [GPT Image 画像生成・編集](#gpt-image-画像生成編集): OpenAI の Images API を使用 (API キー認証)
+<img width="1410" height="1065" alt="image" src="https://github.com/user-attachments/assets/ef220b35-d589-4b3f-bedc-f579e538e38e" />
+
 
 両方の画像生成ページに共通の機能として、[チャット履歴を参照した画像生成](#チャット履歴を参照した画像生成)と [PDF 一括保存](#pdf-一括保存)があります。
 
