@@ -15,6 +15,8 @@ import {
 } from 'generative-ai-use-cases';
 import useGptImageApi from '../hooks/useGptImageApi';
 import useFileApi from '../hooks/useFileApi';
+import useChatApi from '../hooks/useChatApi';
+import { MODELS, findModelByModelId } from '../hooks/useModel';
 import Card from '../components/Card';
 import Textarea from '../components/Textarea';
 import Select from '../components/Select';
@@ -23,6 +25,7 @@ import ButtonIcon from '../components/ButtonIcon';
 import ZoomUpImage from '../components/ZoomUpImage';
 import ModalDialogSelectChat from '../components/ModalDialogSelectChat';
 import { ImageChatContext } from '../utils/chatContext';
+import { planImagePrompts, MAX_PLANNED_IMAGES } from '../utils/imagePlanner';
 import { exportImagesToPdf } from '../utils/exportImagesPdf';
 import {
   PiArrowClockwise,
@@ -84,6 +87,8 @@ type StateType = {
   size: GptImageSize;
   quality: GptImageQuality;
   n: number;
+  // LLM that plans the image set when a chat is referenced
+  plannerModelId: string;
   inputImages: InputImage[];
   exchanges: Exchange[];
   // Chat the ongoing session is recorded into (all exchanges until clear)
@@ -95,6 +100,7 @@ type StateType = {
   setSize: (s: GptImageSize) => void;
   setQuality: (q: GptImageQuality) => void;
   setN: (n: number) => void;
+  setPlannerModelId: (id: string) => void;
   setChatContext: (c?: ImageChatContext) => void;
   addInputImages: (images: InputImage[]) => void;
   removeInputImage: (index: number) => void;
@@ -110,6 +116,7 @@ const useGenerateImageGptPageState = create<StateType>((set) => {
     size: 'auto' as GptImageSize,
     quality: 'auto' as GptImageQuality,
     n: 1,
+    plannerModelId: MODELS.modelIds[0] ?? '',
     inputImages: [],
     exchanges: [],
     chatId: undefined,
@@ -122,6 +129,7 @@ const useGenerateImageGptPageState = create<StateType>((set) => {
     setSize: (s) => set(() => ({ size: s })),
     setQuality: (q) => set(() => ({ quality: q })),
     setN: (n) => set(() => ({ n })),
+    setPlannerModelId: (id) => set(() => ({ plannerModelId: id })),
     setChatContext: (c) => set(() => ({ chatContext: c })),
     addInputImages: (images) =>
       set((state) => ({
@@ -168,6 +176,8 @@ const GenerateImageGptPage: React.FC = () => {
     setQuality,
     n,
     setN,
+    plannerModelId,
+    setPlannerModelId,
     inputImages,
     addInputImages,
     removeInputImage,
@@ -181,7 +191,10 @@ const GenerateImageGptPage: React.FC = () => {
   } = useGenerateImageGptPageState();
   const { generateImage, editImage } = useGptImageApi();
   const { getFileDownloadSignedUrl } = useFileApi();
+  const { predictStream } = useChatApi();
   const [isGenerating, setIsGenerating] = useState(false);
+  // Progress text shown in the timeline while auto-plan generation runs
+  const [genStatus, setGenStatus] = useState('');
   const [isSelectChatOpen, setIsSelectChatOpen] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const timelineBottomRef = useRef<HTMLDivElement>(null);
@@ -336,36 +349,83 @@ const GenerateImageGptPage: React.FC = () => {
   const generate = useCallback(async () => {
     setIsGenerating(true);
     try {
-      const common = {
-        prompt,
-        chatContext: chatContext?.transcript,
-        size,
-        quality,
-        n,
-      };
+      if (mode === 'generate' && chatContext) {
+        // Auto-plan: an LLM reads the referenced chat and the request,
+        // decides how many images to draw (up to MAX_PLANNED_IMAGES) and
+        // writes one prompt per image; then generate them one by one
+        setGenStatus(t('imageAutoPlan.planning'));
+        const plannedPrompts = await planImagePrompts(
+          predictStream,
+          findModelByModelId(plannerModelId),
+          chatContext.transcript,
+          prompt
+        );
 
-      const res =
-        mode === 'edit'
-          ? await editImage(
-              {
-                ...common,
-                images: inputImages.map(toInputImage),
-              },
-              chatId
-            )
-          : await generateImage(common, chatId);
+        // Thread the session chat through the sequential invokes (the
+        // store's chatId only updates after this callback finishes)
+        let sessionChatId = chatId;
+        for (let i = 0; i < plannedPrompts.length; i++) {
+          setGenStatus(
+            t('imageAutoPlan.generatingProgress', {
+              current: i + 1,
+              total: plannedPrompts.length,
+            })
+          );
+          const res = await generateImage(
+            {
+              prompt: plannedPrompts[i],
+              chatContext: chatContext.transcript,
+              size,
+              quality,
+              n: 1,
+            },
+            sessionChatId
+          );
+          sessionChatId = res.chatId ?? sessionChatId;
+          const resultImages = await Promise.all(
+            res.images.map(async (s3Url) => ({
+              s3Url,
+              signedUrl: await getFileDownloadSignedUrl(s3Url),
+            }))
+          );
+          addExchange(
+            { prompt: plannedPrompts[i], results: resultImages },
+            res.chatId
+          );
+        }
+        setPrompt('');
+      } else {
+        const common = {
+          prompt,
+          chatContext: chatContext?.transcript,
+          size,
+          quality,
+          n,
+        };
 
-      // The Lambda returns S3 URLs; resolve them to signed URLs for display
-      const resultImages = await Promise.all(
-        res.images.map(async (s3Url) => ({
-          s3Url,
-          signedUrl: await getFileDownloadSignedUrl(s3Url),
-        }))
-      );
+        const res =
+          mode === 'edit'
+            ? await editImage(
+                {
+                  ...common,
+                  images: inputImages.map(toInputImage),
+                },
+                chatId
+              )
+            : await generateImage(common, chatId);
 
-      // Append as one exchange of the ongoing session (chat-like timeline)
-      addExchange({ prompt, results: resultImages }, res.chatId);
-      setPrompt('');
+        // The Lambda returns S3 URLs; resolve them to signed URLs for display
+        const resultImages = await Promise.all(
+          res.images.map(async (s3Url) => ({
+            s3Url,
+            signedUrl: await getFileDownloadSignedUrl(s3Url),
+          }))
+        );
+
+        // Append as one exchange of the ongoing session (chat-like timeline)
+        addExchange({ prompt, results: resultImages }, res.chatId);
+        setPrompt('');
+      }
     } catch (e) {
       console.error(e);
       const message = e instanceof Error ? e.message : `${e}`;
@@ -374,6 +434,7 @@ const GenerateImageGptPage: React.FC = () => {
         closeButton: true,
       });
     }
+    setGenStatus('');
     setIsGenerating(false);
   }, [
     mode,
@@ -382,10 +443,12 @@ const GenerateImageGptPage: React.FC = () => {
     size,
     quality,
     n,
+    plannerModelId,
     inputImages,
     chatId,
     generateImage,
     editImage,
+    predictStream,
     getFileDownloadSignedUrl,
     addExchange,
     setPrompt,
@@ -540,6 +603,20 @@ const GenerateImageGptPage: React.FC = () => {
             <p className="my-1 text-xs text-gray-400">
               {t('imageChatContext.help')}
             </p>
+
+            {/* LLM that decides the number of images and writes their prompts */}
+            {chatContext && mode === 'generate' && (
+              <Select
+                label={t('imageAutoPlan.model')}
+                value={plannerModelId}
+                onChange={setPlannerModelId}
+                options={MODELS.modelIds.map((modelId: string) => ({
+                  value: modelId,
+                  label: MODELS.modelDisplayName(modelId),
+                }))}
+                fullWidth
+              />
+            )}
           </div>
 
           {mode === 'edit' && (
@@ -610,18 +687,27 @@ const GenerateImageGptPage: React.FC = () => {
             fullWidth
           />
 
-          <Select
-            label={t('gptImage.numberOfImages')}
-            value={`${n}`}
-            onChange={(v) => {
-              setN(Number(v));
-            }}
-            options={NUMBER_OPTIONS.map((v) => ({
-              value: `${v}`,
-              label: `${v}`,
-            }))}
-            fullWidth
-          />
+          {chatContext && mode === 'generate' ? (
+            <div>
+              <div className="text-sm">{t('gptImage.numberOfImages')}</div>
+              <p className="my-1 text-xs text-gray-400">
+                {t('imageAutoPlan.autoCountHelp', { max: MAX_PLANNED_IMAGES })}
+              </p>
+            </div>
+          ) : (
+            <Select
+              label={t('gptImage.numberOfImages')}
+              value={`${n}`}
+              onChange={(v) => {
+                setN(Number(v));
+              }}
+              options={NUMBER_OPTIONS.map((v) => ({
+                value: `${v}`,
+                label: `${v}`,
+              }))}
+              fullWidth
+            />
+          )}
 
           <div className="mt-4 flex flex-row items-center gap-x-5">
             <Button
@@ -722,7 +808,7 @@ const GenerateImageGptPage: React.FC = () => {
                 {isGenerating && (
                   <div className="flex flex-col items-center gap-y-2 py-8 text-gray-400">
                     <PiArrowClockwise className="h-12 w-12 animate-spin" />
-                    {t('gptImage.generating')}
+                    {genStatus || t('gptImage.generating')}
                   </div>
                 )}
                 <div ref={timelineBottomRef} />

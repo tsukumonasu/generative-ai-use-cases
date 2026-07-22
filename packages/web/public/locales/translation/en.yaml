@@ -711,6 +711,11 @@ gptImage:
   viewInHistory: View in chat history
 image:
   load_error: '[Image error: {{error}}]'
+imageAutoPlan:
+  autoCountHelp: The AI decides how many images to generate (up to {{max}}) and what each image should show, based on the referenced chat
+  generatingProgress: Generating image {{current}} of {{total}}...
+  model: AI model for planning
+  planning: AI is planning the image set...
 imageChatContext:
   defaultPrompt: Summarize the conclusion of this conversation as a single clear image
   error:

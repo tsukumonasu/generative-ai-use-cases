@@ -612,6 +612,11 @@ gptImage:
   viewInHistory: チャット履歴で表示
 image:
   load_error: '[画像エラー: {{error}}]'
+imageAutoPlan:
+  autoCountHelp: 参照したチャットの内容から、AI が枚数 (最大 {{max}} 枚) と各画像の内容を自動で判断して生成します
+  generatingProgress: '{{current}} / {{total}} 枚目を生成中...'
+  model: 構成を考える AI モデル
+  planning: AI が画像の構成を検討中...
 imageChatContext:
   defaultPrompt: この会話の結論を、わかりやすい 1 枚の画像にまとめてください
   error:
