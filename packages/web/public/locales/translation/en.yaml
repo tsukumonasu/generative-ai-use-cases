@@ -499,6 +499,72 @@ files:
     videoCountExceeded: Please limit video files to {{maxCount}} or fewer
 flow:
   title: Flow Chat
+geminiImage:
+  aspectRatio: Aspect Ratio
+  clear: Clear
+  download: Download
+  edit: Edit
+  editThisImage: Edit this image
+  error:
+    downloadFailed: Download failed. Please try again
+    fileTooLarge: Total image size is too large (max 4MB)
+    generationFailed: 'Image generation failed: {{error}}'
+    tooManyImages: You can upload up to {{max}} images
+    unsupportedFileType: Unsupported file type (PNG / JPEG / WebP only)
+  generate: Generate
+  generating: Generating images...
+  imageSize: Resolution
+  imageSizeHelp: Resolutions not supported by the model are automatically adjusted
+  mode:
+    edit: Image editing (from images and text)
+    generate: Image generation (from text)
+    label: Mode
+  noResults: Generated images will appear here
+  numberOfImages: Number of images
+  prompt:
+    label: Prompt
+    placeholderEdit: Enter editing instructions for the images
+    placeholderGenerate: Describe the image you want to generate
+  title: Image Generation & Editing (Gemini)
+  upload: Upload
+  uploadImage: Images to edit
+  uploadImageHelp: Upload up to {{max}} PNG / JPEG / WebP images (drag & drop supported). Generated images can also be added with the "Edit this image" button
+  viewInHistory: View in chat history
+geminiVideo:
+  aspectRatio: Aspect Ratio
+  clear: Clear
+  continueEditing: Continue editing the previous result
+  download: Download
+  edit: Edit
+  editThisVideo: Edit this video
+  error:
+    downloadFailed: Download failed. Please try again
+    fileTooLarge: Total input size is too large (max 4MB)
+    generationFailed: 'Video generation failed: {{error}}'
+    tooManyImages: You can upload up to {{max}} images
+    unsupportedFileType: Unsupported file type
+    uploadFailed: Failed to upload the video. Please try again
+    videoTooLarge: The video file is too large (max {{max}}MB)
+  generate: Generate
+  generating: Generating the video. This can take a few minutes
+  generationTimeNote: Video generation can take a few minutes
+  mode:
+    edit: Video editing (from the previous result or a video)
+    generate: Video generation (from text / images)
+    label: Mode
+  noResults: Generated videos will appear here
+  prompt:
+    label: Prompt
+    placeholderEdit: Describe what to change (e.g. Make the sky a sunset. Keep everything else the same)
+    placeholderGenerate: Describe the video you want to generate (be specific about camera and subject motion)
+  referenceImages: Reference images (optional)
+  referenceImagesHelp: Upload up to {{max}} PNG / JPEG / WebP images. One image drives image-to-video; multiple images are used as subject references
+  title: Video Generation & Editing (Gemini)
+  upload: Upload
+  uploadVideo: Video to edit
+  uploadVideoHelp: Upload one MP4 / WebM video (max {{max}}MB). Generated videos can be edited further with the "Edit this video" button
+  uploading: Uploading
+  viewInHistory: View in chat history
 generateImage:
   add_color: Add Color
   assistant:
@@ -608,6 +674,41 @@ generateText:
   result_placeholder: Generated text will be displayed here
   source_info: Source information for text
   title: Text Generation
+gptImage:
+  auto: Auto
+  clear: Clear
+  download: Download
+  edit: Edit
+  editThisImage: Edit this image
+  error:
+    downloadFailed: Download failed. Please try again
+    fileTooLarge: Total image size is too large (max 4MB)
+    generationFailed: 'Image generation failed: {{error}}'
+    tooManyImages: 'You can upload up to {{max}} images'
+    unsupportedFileType: Unsupported file type (PNG / JPEG / WebP only)
+  generate: Generate
+  generating: Generating images...
+  mode:
+    edit: Edit (from image and text)
+    generate: Generate (from text)
+    label: Mode
+  noResults: Generated images will be displayed here
+  numberOfImages: Number of images
+  prompt:
+    label: Prompt
+    placeholderEdit: Describe how you want to edit the image
+    placeholderGenerate: Describe the image you want to generate
+  qualities:
+    high: High
+    low: Low
+    medium: Medium
+  quality: Quality
+  size: Size
+  title: Image Generation & Editing (GPT Image)
+  upload: Upload
+  uploadImage: Images to edit
+  uploadImageHelp: Upload up to {{max}} PNG / JPEG / WebP images (drag & drop supported). Generated results can also be added with the "Edit this image" button
+  viewInHistory: View in chat history
 image:
   load_error: '[Image error: {{error}}]'
 inputs:
@@ -929,6 +1030,9 @@ navigation:
   chat: Chat
   diagramGeneration: Diagram Generation
   flowChat: Flow Chat
+  geminiImage: Image Generation & Editing (Gemini)
+  geminiVideo: Video Generation & Editing (Gemini)
+  gptImage: Image Generation & Editing (GPT)
   home: Home
   imageGeneration: Image Generation
   meetingMinutes: Meeting Minutes

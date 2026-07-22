@@ -70,6 +70,12 @@ export interface WebProps {
   readonly agentCoreRegion?: string;
   readonly researchAgentEnabled: boolean;
   readonly researchAgentRuntime?: AgentCoreConfiguration;
+  // GPT Image (fork custom, OpenAI Images API)
+  readonly gptImageEnabled: boolean;
+  readonly gptImageFunctionArn: string;
+  // Gemini (fork custom, Google Gemini API via Workload Identity Federation)
+  readonly geminiEnabled: boolean;
+  readonly geminiFunctionArn: string;
   readonly brandingConfig?: {
     logoPath?: string;
     title?: string;
@@ -311,6 +317,10 @@ export class Web extends Construct {
           props.agentCoreExternalRuntimes
         ),
         VITE_APP_RESEARCH_AGENT_ENABLED: props.researchAgentEnabled.toString(),
+        VITE_APP_GPT_IMAGE_ENABLED: props.gptImageEnabled.toString(),
+        VITE_APP_GPT_IMAGE_FUNCTION_ARN: props.gptImageFunctionArn,
+        VITE_APP_GEMINI_ENABLED: props.geminiEnabled.toString(),
+        VITE_APP_GEMINI_FUNCTION_ARN: props.geminiFunctionArn,
         VITE_APP_RESEARCH_AGENT_RUNTIME: JSON.stringify(
           props.researchAgentRuntime
         ),

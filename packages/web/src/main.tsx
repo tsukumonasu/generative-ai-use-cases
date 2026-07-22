@@ -23,6 +23,9 @@ import RagPage from './pages/RagPage';
 import RagKnowledgeBasePage from './pages/RagKnowledgeBasePage';
 import WebContent from './pages/WebContent';
 import GenerateImagePage from './pages/GenerateImagePage';
+import GenerateImageGptPage from './pages/GenerateImageGptPage';
+import GenerateImageGeminiPage from './pages/GenerateImageGeminiPage';
+import GenerateVideoGeminiPage from './pages/GenerateVideoGeminiPage';
 import GenerateVideoPage from './pages/GenerateVideoPage';
 import OptimizePromptPage from './pages/OptimizePromptPage';
 import TranscribePage from './pages/TranscribePage';
@@ -64,6 +67,10 @@ const agentBuilderEnabled: boolean =
   import.meta.env.VITE_APP_AGENT_CORE_AGENT_BUILDER_ENABLED === 'true';
 const researchAgentEnabled: boolean =
   import.meta.env.VITE_APP_RESEARCH_AGENT_ENABLED === 'true';
+const gptImageEnabled: boolean =
+  import.meta.env.VITE_APP_GPT_IMAGE_ENABLED === 'true';
+const geminiEnabled: boolean =
+  import.meta.env.VITE_APP_GEMINI_ENABLED === 'true';
 
 const {
   visionEnabled,
@@ -141,6 +148,24 @@ const routes: RouteObject[] = [
     ? {
         path: '/image',
         element: <GenerateImagePage />,
+      }
+    : null,
+  gptImageEnabled
+    ? {
+        path: '/gpt-image',
+        element: <GenerateImageGptPage />,
+      }
+    : null,
+  geminiEnabled
+    ? {
+        path: '/gemini-image',
+        element: <GenerateImageGeminiPage />,
+      }
+    : null,
+  geminiEnabled
+    ? {
+        path: '/gemini-video',
+        element: <GenerateVideoGeminiPage />,
       }
     : null,
   videoGenModelIds.length > 0 && enabled('video')

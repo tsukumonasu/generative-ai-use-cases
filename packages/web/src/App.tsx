@@ -10,6 +10,7 @@ import {
   PiPenNib,
   PiTranslate,
   PiImages,
+  PiImagesSquare,
   PiVideoLight,
   PiSpeakerHighBold,
   PiGear,
@@ -51,6 +52,10 @@ const agentBuilderEnabled: boolean =
   import.meta.env.VITE_APP_AGENT_CORE_AGENT_BUILDER_ENABLED === 'true';
 const researchAgentEnabled: boolean =
   import.meta.env.VITE_APP_RESEARCH_AGENT_ENABLED === 'true';
+const gptImageEnabled: boolean =
+  import.meta.env.VITE_APP_GPT_IMAGE_ENABLED === 'true';
+const geminiEnabled: boolean =
+  import.meta.env.VITE_APP_GEMINI_ENABLED === 'true';
 
 const {
   visionEnabled,
@@ -241,6 +246,30 @@ const App: React.FC = () => {
           label: t('navigation.imageGeneration'),
           to: '/image',
           icon: <PiImages />,
+          display: 'usecase' as const,
+        }
+      : null,
+    gptImageEnabled
+      ? {
+          label: t('navigation.gptImage'),
+          to: '/gpt-image',
+          icon: <PiImagesSquare />,
+          display: 'usecase' as const,
+        }
+      : null,
+    geminiEnabled
+      ? {
+          label: t('navigation.geminiImage'),
+          to: '/gemini-image',
+          icon: <PiImagesSquare />,
+          display: 'usecase' as const,
+        }
+      : null,
+    geminiEnabled
+      ? {
+          label: t('navigation.geminiVideo'),
+          to: '/gemini-video',
+          icon: <PiVideoLight />,
           display: 'usecase' as const,
         }
       : null,

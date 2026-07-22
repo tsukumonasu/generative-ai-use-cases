@@ -435,6 +435,72 @@ files:
     videoCountExceeded: 動画数は {{maxCount}} 個以下にしてください。
 flow:
   title: Flow チャット
+geminiImage:
+  aspectRatio: アスペクト比
+  clear: クリア
+  download: ダウンロード
+  edit: 編集
+  editThisImage: この画像を編集
+  error:
+    downloadFailed: ダウンロードに失敗しました。再度お試しください
+    fileTooLarge: 画像の合計サイズが大きすぎます (最大 4MB)
+    generationFailed: '画像の生成に失敗しました: {{error}}'
+    tooManyImages: アップロードできる画像は最大 {{max}} 枚です
+    unsupportedFileType: サポートされていないファイル形式です (PNG / JPEG / WebP のみ)
+  generate: 生成
+  generating: 画像を生成しています
+  imageSize: 解像度
+  imageSizeHelp: モデルが対応していない解像度は、対応範囲に自動調整されます
+  mode:
+    edit: 画像編集 (画像とテキストから)
+    generate: 画像生成 (テキストから)
+    label: モード
+  noResults: 生成された画像がここに表示されます
+  numberOfImages: 生成枚数
+  prompt:
+    label: プロンプト
+    placeholderEdit: 画像に対する編集指示を入力してください
+    placeholderGenerate: 生成したい画像の説明を入力してください
+  title: 画像生成・編集 (Gemini)
+  upload: アップロード
+  uploadImage: 編集する画像
+  uploadImageHelp: PNG / JPEG / WebP 形式の画像を最大 {{max}} 枚までアップロードできます (ドラッグ&ドロップ可)。生成結果の画像も「この画像を編集」ボタンで追加できます
+  viewInHistory: チャット履歴で表示
+geminiVideo:
+  aspectRatio: アスペクト比
+  clear: クリア
+  continueEditing: 直前の生成結果を続けて編集します
+  download: ダウンロード
+  edit: 編集
+  editThisVideo: この動画を編集
+  error:
+    downloadFailed: ダウンロードに失敗しました。再度お試しください
+    fileTooLarge: 入力ファイルの合計サイズが大きすぎます (最大 4MB)
+    generationFailed: '動画の生成に失敗しました: {{error}}'
+    tooManyImages: アップロードできる画像は最大 {{max}} 枚です
+    unsupportedFileType: サポートされていないファイル形式です
+    uploadFailed: 動画のアップロードに失敗しました。再度お試しください
+    videoTooLarge: 動画ファイルが大きすぎます (最大 {{max}}MB)
+  generate: 生成
+  generating: 動画を生成しています。数分かかることがあります
+  generationTimeNote: 動画の生成には数分かかることがあります
+  mode:
+    edit: 動画編集 (前回の結果または動画から)
+    generate: 動画生成 (テキスト / 画像から)
+    label: モード
+  noResults: 生成された動画がここに表示されます
+  prompt:
+    label: プロンプト
+    placeholderEdit: '変更したい内容を入力してください (例: 空を夕焼けにして。他はそのまま)'
+    placeholderGenerate: 生成したい動画の説明を入力してください (カメラの動きや被写体の動きを具体的に)
+  referenceImages: 参照画像 (任意)
+  referenceImagesHelp: PNG / JPEG / WebP 形式の画像を最大 {{max}} 枚までアップロードできます。1 枚なら画像から動画、複数なら被写体参照として使われます
+  title: 動画生成・編集 (Gemini)
+  upload: アップロード
+  uploadVideo: 編集する動画
+  uploadVideoHelp: MP4 / WebM 形式の動画を 1 本アップロードできます (最大 {{max}}MB)。生成結果の動画は「この動画を編集」ボタンで続けて編集できます
+  uploading: アップロード中
+  viewInHistory: チャット履歴で表示
 generateImage:
   add_color: カラーを追加
   assistant:
@@ -509,6 +575,41 @@ generateText:
   result_placeholder: 生成された文章がここに表示されます
   source_info: 文章の元になる情報
   title: 文章生成
+gptImage:
+  auto: 自動
+  clear: クリア
+  download: ダウンロード
+  edit: 編集
+  editThisImage: この画像を編集
+  error:
+    downloadFailed: ダウンロードに失敗しました。再度お試しください
+    fileTooLarge: 画像の合計サイズが大きすぎます (最大 4MB)
+    generationFailed: '画像の生成に失敗しました: {{error}}'
+    tooManyImages: アップロードできる画像は最大 {{max}} 枚です
+    unsupportedFileType: サポートされていないファイル形式です (PNG / JPEG / WebP のみ)
+  generate: 生成
+  generating: 画像を生成しています
+  mode:
+    edit: 画像編集 (画像とテキストから)
+    generate: 画像生成 (テキストから)
+    label: モード
+  noResults: 生成された画像がここに表示されます
+  numberOfImages: 生成枚数
+  prompt:
+    label: プロンプト
+    placeholderEdit: 画像に対する編集指示を入力してください
+    placeholderGenerate: 生成したい画像の説明を入力してください
+  qualities:
+    high: 高
+    low: 低
+    medium: 中
+  quality: 品質
+  size: サイズ
+  title: 画像生成・編集 (GPT Image)
+  upload: アップロード
+  uploadImage: 編集する画像
+  uploadImageHelp: PNG / JPEG / WebP 形式の画像を最大 {{max}} 枚までアップロードできます (ドラッグ&ドロップ可)。生成結果の画像も「この画像を編集」ボタンで追加できます
+  viewInHistory: チャット履歴で表示
 image:
   load_error: '[画像エラー: {{error}}]'
 inputs:
@@ -775,6 +876,9 @@ navigation:
   chat: チャット
   diagramGeneration: ダイアグラム生成
   flowChat: Flow チャット
+  geminiImage: 画像生成・編集 (Gemini)
+  geminiVideo: 動画生成・編集 (Gemini)
+  gptImage: 画像生成・編集 (GPT)
   home: ホーム
   imageGeneration: 画像生成
   meetingMinutes: 議事録生成

@@ -262,6 +262,16 @@ export class GenerativeAiUseCasesStack extends Stack {
       knowledgeBaseDataSourceBucketName:
         props.knowledgeBaseDataSourceBucketName,
       dataSourceBucketName: rag?.dataSourceBucketName,
+      // GPT Image (OpenAI Images API)
+      openAiApiKey: params.openAiApiKey,
+      openAiImageModel: params.openAiImageModel,
+      // Gemini (Google Gemini API via Workload Identity Federation)
+      geminiWifAudience: params.geminiWifAudience,
+      geminiServiceAccountEmail: params.geminiServiceAccountEmail,
+      geminiProjectId: params.geminiProjectId,
+      geminiImageModel: params.geminiImageModel,
+      geminiImageLocation: params.geminiImageLocation,
+      geminiVideoModel: params.geminiVideoModel,
     });
 
     // WAF
@@ -390,6 +400,12 @@ export class GenerativeAiUseCasesStack extends Stack {
         : undefined,
       // Frontend
       hiddenUseCases: params.hiddenUseCases,
+      // GPT Image (OpenAI Images API)
+      gptImageEnabled: api.invokeGptImageFunction !== undefined,
+      gptImageFunctionArn: api.invokeGptImageFunction?.functionArn ?? '',
+      // Gemini (Google Gemini API via Workload Identity Federation)
+      geminiEnabled: api.invokeGeminiFunction !== undefined,
+      geminiFunctionArn: api.invokeGeminiFunction?.functionArn ?? '',
       // Custom Domain
       cert: props.cert,
       hostName: params.hostName,

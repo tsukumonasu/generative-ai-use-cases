@@ -173,6 +173,17 @@ const baseStackInputSchema = z.object({
   createResearchAgentFargate: z.boolean().default(false),
   researchAgentBraveApiKey: z.string().default(''),
   researchAgentTavilyApiKey: z.string().default(''),
+  // GPT Image (fork custom, OpenAI Images API)
+  openAiApiKey: z.string().default(''),
+  openAiImageModel: z.string().default('gpt-image-2'),
+  // Gemini (fork custom, Google Gemini API via Workload Identity Federation)
+  // See docs/ja/GEMINI.md for the Google-side setup that produces these values
+  geminiWifAudience: z.string().default(''),
+  geminiServiceAccountEmail: z.string().default(''),
+  geminiProjectId: z.string().default(''),
+  geminiImageModel: z.string().default('gemini-3.1-flash-image'),
+  geminiImageLocation: z.string().default('global'),
+  geminiVideoModel: z.string().default('gemini-omni-flash-preview'),
   // MCP
   mcpEnabled: z.boolean().default(false),
   // Guardrail
