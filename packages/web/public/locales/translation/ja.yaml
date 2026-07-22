@@ -618,7 +618,7 @@ imageAutoPlan:
   model: 構成を考える AI モデル
   planning: AI が画像の構成を検討中...
 imageChatContext:
-  defaultPrompt: この会話の結論を、わかりやすい 1 枚の画像にまとめてください
+  defaultPrompt: この会話の内容を、プレゼン資料として使えるスライド画像にまとめてください。伝わりやすさを重視して、適切な枚数に分割してください
   error:
     emptyChat: このチャットにはメッセージがありません
     loadFailed: チャット履歴の読み込みに失敗しました。再度お試しください

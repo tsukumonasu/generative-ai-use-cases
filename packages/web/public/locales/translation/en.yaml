@@ -717,7 +717,7 @@ imageAutoPlan:
   model: AI model for planning
   planning: AI is planning the image set...
 imageChatContext:
-  defaultPrompt: Summarize the conclusion of this conversation as a single clear image
+  defaultPrompt: Summarize this conversation as presentation slide images, split into an appropriate number of slides for clarity
   error:
     emptyChat: This chat has no messages
     loadFailed: Failed to load the chat history. Please try again
