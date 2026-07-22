@@ -121,7 +121,7 @@ const throwApiError = (
     throw new Error(
       `Authentication / permission error on ${endpoint} (${status}): ${message}. ` +
         'Check the Workload Identity Federation setup, the service account roles, ' +
-        'and that the API is enabled in the Google Cloud project (docs/ja/GEMINI.md).'
+        'and that the API is enabled in the Google Cloud project (docs/ja/DEPLOY_GEMINI_GPT_IMAGE.md).'
     );
   }
   throw new Error(`${endpoint} request failed (${status}): ${message}`);

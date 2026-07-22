@@ -19,6 +19,9 @@ export type GptImageInputImage = {
 
 export type GenerateImageGptRequest = {
   prompt: string;
+  // Transcript of a referenced chat conversation. Prepended to the prompt
+  // for the model call only — the recorded chat history keeps just prompt
+  chatContext?: string;
   size?: GptImageSize;
   quality?: GptImageQuality;
   n?: number;

@@ -177,7 +177,7 @@ const baseStackInputSchema = z.object({
   openAiApiKey: z.string().default(''),
   openAiImageModel: z.string().default('gpt-image-2'),
   // Gemini (fork custom, Google Gemini API via Workload Identity Federation)
-  // See docs/ja/GEMINI.md for the Google-side setup that produces these values
+  // See docs/ja/DEPLOY_GEMINI_GPT_IMAGE.md for the Google-side setup that produces these values
   geminiWifAudience: z.string().default(''),
   geminiServiceAccountEmail: z.string().default(''),
   geminiProjectId: z.string().default(''),

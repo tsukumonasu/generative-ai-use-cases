@@ -6,7 +6,7 @@
 //   2. Exchange it at Google STS (sts.googleapis.com/v1/token)
 //   3. Impersonate the target service account (iamcredentials generateAccessToken)
 // Google-side setup (workload identity pool / provider / service account) is
-// documented in docs/ja/GEMINI.md.
+// documented in docs/ja/DEPLOY_GEMINI_GPT_IMAGE.md.
 
 import { createHash, createHmac } from 'node:crypto';
 
@@ -208,7 +208,7 @@ export const getGoogleAccessToken = async (): Promise<string> => {
   const serviceAccountEmail = process.env.GOOGLE_SA_EMAIL;
   if (!audience || !serviceAccountEmail) {
     throw new Error(
-      'GOOGLE_WIF_AUDIENCE / GOOGLE_SA_EMAIL are not configured. Set geminiWifAudience / geminiServiceAccountEmail in cdk.json (see docs/ja/GEMINI.md) and redeploy.'
+      'GOOGLE_WIF_AUDIENCE / GOOGLE_SA_EMAIL are not configured. Set geminiWifAudience / geminiServiceAccountEmail in cdk.json (see docs/ja/DEPLOY_GEMINI_GPT_IMAGE.md) and redeploy.'
     );
   }
 

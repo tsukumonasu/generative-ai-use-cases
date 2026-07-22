@@ -1,4 +1,13 @@
-# Gemini 画像・動画生成
+# 画像・動画生成 (Gemini / GPT Image) のデプロイ
+
+GenU から外部の生成 AI API を呼び出して画像・動画を生成する拡張機能のセットアップ手順です。
+
+- [Gemini 画像・動画生成](#gemini-画像動画生成): Google の Gemini API を使用 (Workload Identity Federation 認証、API キー不要)
+- [GPT Image 画像生成・編集](#gpt-image-画像生成編集): OpenAI の Images API を使用 (API キー認証)
+
+両方の画像生成ページに共通の機能として、[チャット履歴を参照した画像生成](#チャット履歴を参照した画像生成)と [PDF 一括保存](#pdf-一括保存)があります。
+
+## Gemini 画像・動画生成
 
 GenU から Google の Gemini API を呼び出して、画像生成・編集 (Nano Banana ファミリー) と動画生成・編集 (Gemini Omni Flash) を行う機能です。
 
@@ -23,7 +32,7 @@ GenU から Google の Gemini API を呼び出して、画像生成・編集 (Na
 
 生成結果は既存の `fileBucket` (S3) に保存され、チャット履歴 (`/gemini-image`, `/gemini-video`) として自動記録されます。
 
-## 必要な設定値
+### 必要な設定値
 
 Google 側のセットアップ (後述) が完了すると、以下の 3 つの値が決まります。**`geminiWifAudience` / `geminiServiceAccountEmail` / `geminiProjectId` の 3 つすべてを `packages/cdk/cdk.json` に設定した場合のみ、デプロイ時に `InvokeGemini` Lambda が作成され、機能が有効になります**。未設定 (空文字) の間は Lambda 自体が作成されず、メニューにも表示されません。
 
@@ -49,7 +58,7 @@ Google 側のセットアップ (後述) が完了すると、以下の 3 つの
 | `geminiImageLocation`       | 画像モデルのロケーション。既定 `global`                                                                                                               |
 | `geminiVideoModel`          | 動画モデル。既定 `gemini-omni-flash-preview` (執筆時点でプレビュー)                                                                                   |
 
-## Google Cloud 側のセットアップ手順
+### Google Cloud 側のセットアップ手順
 
 以下は gcloud CLI での手順です (Cloud Shell で実行可)。Console での操作は各手順の補足を参照してください。
 
@@ -70,7 +79,7 @@ export AWS_ACCOUNT_ID="<AWS_ACCOUNT_ID>"
 gcloud config set project "${PROJECT_ID}"
 ```
 
-### 1. API の有効化
+#### 1. API の有効化
 
 ```bash
 gcloud services enable \
@@ -86,7 +95,7 @@ gcloud services enable \
 
 > Console の場合: 「API とサービス」→「ライブラリ」で上記 4 つを検索して有効化。
 
-### 2. Workload Identity プールと AWS プロバイダの作成
+#### 2. Workload Identity プールと AWS プロバイダの作成
 
 ```bash
 gcloud iam workload-identity-pools create genu-aws-pool \
@@ -106,7 +115,7 @@ gcloud iam workload-identity-pools providers create-aws genu-aws-provider \
 
 > Console の場合: 「IAM と管理」→「Workload Identity 連携」→「プールを作成」。プロバイダの種類は「AWS」を選び、AWS アカウント ID を入力。属性マッピングの `google.subject` を上記の値に変更。
 
-### 3. サービスアカウントの作成とロール付与
+#### 3. サービスアカウントの作成とロール付与
 
 ```bash
 gcloud iam service-accounts create genu-gemini \
@@ -125,7 +134,7 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 
 > Console の場合: 「IAM と管理」→「サービス アカウント」→「サービス アカウントを作成」。ロールは「Vertex AI ユーザー」と「Service Usage ユーザー」を付与。
 
-### 4. AWS からのサービスアカウント借用を許可
+#### 4. AWS からのサービスアカウント借用を許可
 
 WIF プール経由で認証した AWS プリンシパルに、サービスアカウントの借用 (`roles/iam.workloadIdentityUser`) を許可します。
 
@@ -140,7 +149,7 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 > 上記は「AWS アカウント内のすべての IAM ロール」に借用を許可します。invokeGemini Lambda の実行ロールだけに絞りたい場合は、デプロイ後に CloudFormation (スタックのリソース一覧) で `InvokeGemini` 関数の実行ロール名を確認し、member を `attribute.aws_role/<ロール名>` にした binding に置き換えてください (ロール名は再デプロイで変わることがある点に注意)。
 
-### 5. cdk.json への設定値の反映
+#### 5. cdk.json への設定値の反映
 
 ```bash
 echo "geminiWifAudience: //iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/genu-aws-pool/providers/genu-aws-provider"
@@ -150,7 +159,7 @@ echo "geminiProjectId: ${PROJECT_ID}"
 
 出力された 3 つの値を `packages/cdk/cdk.json` の `context` に設定し、GenU をデプロイします。デプロイ後、メニューに「画像生成・編集 (Gemini)」「動画生成・編集 (Gemini)」が表示されます。
 
-## 機能・制約
+### 機能・制約
 
 - **画像**: テキストから生成、画像 + テキストで編集 (最大 4 枚 / 合計 4MB)。アスペクト比、解像度 (512 / 1K / 2K / 4K。モデル非対応の解像度は自動調整)、生成枚数 (1〜4) を指定可能
 - **動画**: テキスト / 参照画像から生成 (16:9 / 9:16、音声付き MP4)。編集は 2 方式:
@@ -161,7 +170,7 @@ echo "geminiProjectId: ${PROJECT_ID}"
 - EEA (欧州経済領域)・スイス・英国では、アップロードした動画の編集は Gemini API 側で非対応です (生成結果のステートフル編集は可能)
 - `gemini-omni-flash-preview` は執筆時点でプレビュー版のため、API 仕様が変更される可能性があります
 
-## トラブルシューティング
+### トラブルシューティング (Gemini)
 
 | 症状                                         | 原因・対処                                                                                                                    |
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -171,3 +180,90 @@ echo "geminiProjectId: ${PROJECT_ID}"
 | `403 PERMISSION_DENIED` (動画)               | `generativelanguage.googleapis.com` 未有効化、または `roles/serviceusage.serviceUsageConsumer` が無い                         |
 | `429`                                        | レート制限。時間を置いて再試行                                                                                                |
 | メニューに表示されない                       | `geminiWifAudience` / `geminiServiceAccountEmail` / `geminiProjectId` の 3 つすべてが設定された状態でデプロイされているか確認 |
+
+## GPT Image 画像生成・編集
+
+GenU から OpenAI の Images API を呼び出して、画像生成・編集 (GPT Image ファミリー) を行う機能です。
+
+- 生成: `https://api.openai.com/v1/images/generations`
+- 編集: `https://api.openai.com/v1/images/edits`
+
+認証は OpenAI の **API キー** を使います。
+
+```
+フロントエンド ──(IAM 直接 Invoke)──▶ invokeGptImage Lambda
+        │ OPENAI_API_KEY (環境変数)
+        ▼
+    api.openai.com (Images API)
+```
+
+生成結果は既存の `fileBucket` (S3) に保存され、チャット履歴 (`/gpt-image`) として自動記録されます。
+
+### 必要な設定値
+
+`packages/cdk/cdk.json` の `context` に以下を設定してデプロイすると機能が有効になります。
+
+```json
+{
+  "context": {
+    "openAiApiKey": "sk-...",
+    "openAiImageModel": "gpt-image-2"
+  }
+}
+```
+
+| パラメータ         | 説明                                                                                                                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `openAiApiKey`     | OpenAI の API キー。**このパラメータを設定した場合のみ、デプロイ時に `InvokeGptImage` Lambda が作成されます**。未設定 (空文字) の間は Lambda 自体が作成されず、メニューにも表示されません |
+| `openAiImageModel` | 使用する画像モデル。既定 `gpt-image-2`                                                                                                                                                    |
+
+> **API キーの取り扱いに注意**: `cdk.json` に記載した API キーはリポジトリにコミットされ得ます。公開リポジトリや外部に共有するリポジトリでは、キーをコミットしないでください。
+
+### アーキテクチャ
+
+- **Lambda 直接 Invoke**: 画像生成は API Gateway の統合タイムアウト (29 秒) を超えることがあるため、フロントエンドから `InvokeGptImage` Lambda を IAM 認証 (Cognito Identity Pool) で直接呼び出します (タイムアウト 15 分)。ユーザー識別はペイロードの ID トークンを Lambda 内で検証して行います
+- **生成結果の保存**: 生成画像は S3 (`fileBucket`) にアップロードされ、レスポンスには S3 URL のみが含まれます (フロントエンドで署名付き URL に解決)。Invoke ペイロードの 6MB 制限を超えないためです
+- **チャット履歴**: 生成のたびにユースケース `/gpt-image` のチャット履歴に記録されます。同一セッション中の連続生成は 1 つのチャットに追記され、`/chat/:chatId` で参照できます
+
+### 機能・制約
+
+- **生成**: テキストから画像を生成。サイズ (自動 / 1024x1024 / 1536x1024 / 1024x1536)、品質 (自動 / 低 / 中 / 高)、生成枚数 (1〜4) を指定可能
+- **編集**: 画像 (最大 4 枚 / 合計 4MB) + テキストで編集。ドラッグ&ドロップでのアップロードに対応
+- **反復編集**: 生成結果の画像は「この画像を編集」ボタンで編集入力に追加できます。この場合は S3 URL で Lambda に渡され、Lambda 側でバケット内のオブジェクトのみ解決するため、入力 4MB 制限を消費しません
+- 入力の合計 4MB 制限は Lambda 直接 Invoke のペイロード上限 (6MB、base64 で約 4/3 に膨張) によるものです
+
+### トラブルシューティング (GPT Image)
+
+| 症状                               | 原因・対処                                                                       |
+| ---------------------------------- | -------------------------------------------------------------------------------- |
+| `OPENAI_API_KEY is not configured` | `openAiApiKey` が未設定のままデプロイされている。`cdk.json` に設定して再デプロイ |
+| `OpenAI Images API error (401)`    | API キーが無効。キーを確認                                                       |
+| `OpenAI Images API error (429)`    | レート制限または利用上限。時間を置いて再試行、または OpenAI の利用状況を確認     |
+| メニューに表示されない             | `openAiApiKey` が設定された状態でデプロイされているか確認                        |
+
+## 画像生成ページの共通機能
+
+Gemini / GPT Image の両画像生成ページで使える機能です。追加の設定は不要です。
+
+### チャット履歴を参照した画像生成
+
+過去のチャットでの会話内容を踏まえて画像を生成する機能です。チャットで議論した結論を 1 枚の絵 (インフォグラフィックなど) にまとめる用途を想定しています。
+
+**使い方**: プロンプト欄の下の「チャット履歴を選択」からチャットを選ぶと、参照中のチャットがチップ表示されます (× で解除)。プロンプトが空の場合は「この会話の結論を、わかりやすい 1 枚の画像にまとめてください」が自動入力されるので、必要に応じて編集して生成します。
+
+**動作の詳細**:
+
+- 選択したチャットのメッセージを `user:` / `assistant:` 形式のトランスクリプトに整形し、リクエストの `chatContext` フィールドで Lambda に送信します
+- Lambda はモデル呼び出し時のみトランスクリプトをプロンプトに前置します。**チャット履歴にはユーザーが入力したプロンプトだけが記録される**ため、履歴表示が長文で汚れません
+- トランスクリプトには「必ず画像を 1 枚生成する (テキストで回答しない)」という指示が組み込まれるため、「1 枚絵にして」と明示しなくても画像が生成されます
+- 会話が長い場合は**結論側 (末尾) を優先して 10,000 文字**に切り詰めます (gpt-image-1 のプロンプト上限 32,000 文字への対策。上限は `packages/web/src/utils/chatContext.ts` の `MAX_TRANSCRIPT_LENGTH` で調整可能)
+- チャット選択時にアスペクト比が横長に自動設定されます (Gemini: 16:9 / GPT Image: 16:9 非対応のため最も近い 1536x1024)。手動で変更可能です
+- 選択モーダルには画像・動画生成セッション自体の履歴 (`/gpt-image`, `/gemini-image` など) は表示されません
+
+### PDF 一括保存
+
+セッション中に生成したすべての画像を 1 つの PDF ファイルにまとめてダウンロードする機能です。複数回の生成・複数枚出力をまとめて配布資料にする用途を想定しています。
+
+- 生成結果タイムライン右上の「PDF に保存」ボタンで実行します
+- 1 画像 = 1 ページで、各ページは画像の実サイズ・向きに合わせて作成されるため画質の劣化はありません
+- PDF の生成はブラウザ内 ([jsPDF](https://github.com/parallax/jsPDF)) で完結し、サーバーへの追加リクエストは画像の再取得のみです

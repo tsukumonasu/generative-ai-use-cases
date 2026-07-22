@@ -67,6 +67,12 @@ export const handler = async (
     throw new Error('prompt is required');
   }
 
+  // A referenced chat transcript is prepended for the model call only —
+  // the recorded chat history keeps just the user's own prompt
+  const modelPrompt = req.chatContext
+    ? `${req.chatContext}\n\n${req.prompt}`
+    : req.prompt;
+
   let inputImages: GptImageInputImage[] | undefined;
   let res;
 
@@ -75,9 +81,13 @@ export const handler = async (
     // Keep the original (possibly s3Url-based) inputs for history recording
     inputImages = editReq.images;
     const resolvedImages = await resolveInputImages(editReq.images ?? []);
-    res = await editImageGpt({ ...editReq, images: resolvedImages });
+    res = await editImageGpt({
+      ...editReq,
+      prompt: modelPrompt,
+      images: resolvedImages,
+    });
   } else {
-    res = await generateImageGpt(req);
+    res = await generateImageGpt({ ...req, prompt: modelPrompt });
   }
 
   const { userExtraData, assistantExtraData } = await uploadGptImages(

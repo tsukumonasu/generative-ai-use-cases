@@ -438,7 +438,7 @@ export class Api extends Construct {
     // Invoked directly from the frontend to avoid the API Gateway 29s
     // integration timeout (video generation can take several minutes).
     // Calls Google APIs with a token obtained by exchanging the execution
-    // role's AWS credentials — no API key (see docs/ja/GEMINI.md).
+    // role's AWS credentials — no API key (see docs/ja/DEPLOY_GEMINI_GPT_IMAGE.md).
     if (
       props.geminiWifAudience &&
       props.geminiServiceAccountEmail &&

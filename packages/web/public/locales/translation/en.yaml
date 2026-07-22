@@ -711,6 +711,23 @@ gptImage:
   viewInHistory: View in chat history
 image:
   load_error: '[Image error: {{error}}]'
+imageChatContext:
+  defaultPrompt: Summarize the conclusion of this conversation as a single clear image
+  error:
+    emptyChat: This chat has no messages
+    loadFailed: Failed to load the chat history. Please try again
+  help: Generates images based on the selected chat's conversation. Useful for summarizing a conversation's conclusion as a single picture
+  label: Reference chat history (optional)
+  loadMore: Load more
+  messageCount: ({{n}} messages)
+  noChats: No chat history
+  remove: Remove reference
+  select: Select chat history
+  selectChat: Select a chat to reference
+imagePdf:
+  error:
+    exportFailed: Failed to create the PDF. Please try again
+  exportAll: Save as PDF
 inputs:
   attachment: Attachment
   reasoning: Extended thinking

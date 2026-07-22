@@ -612,6 +612,23 @@ gptImage:
   viewInHistory: チャット履歴で表示
 image:
   load_error: '[画像エラー: {{error}}]'
+imageChatContext:
+  defaultPrompt: この会話の結論を、わかりやすい 1 枚の画像にまとめてください
+  error:
+    emptyChat: このチャットにはメッセージがありません
+    loadFailed: チャット履歴の読み込みに失敗しました。再度お試しください
+  help: 選択したチャットの会話内容を踏まえて画像を生成します。会話の結論を 1 枚の絵にまとめる用途に使えます
+  label: チャット履歴の参照 (任意)
+  loadMore: さらに読み込む
+  messageCount: ({{n}} 件のメッセージ)
+  noChats: チャット履歴がありません
+  remove: 参照を解除
+  select: チャット履歴を選択
+  selectChat: 参照するチャットを選択
+imagePdf:
+  error:
+    exportFailed: PDF の作成に失敗しました。再度お試しください
+  exportAll: PDF に保存
 inputs:
   attachment: 添付ファイル
   reasoning: 深く考える

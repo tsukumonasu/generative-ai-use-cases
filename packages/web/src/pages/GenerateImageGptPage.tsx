@@ -21,13 +21,18 @@ import Select from '../components/Select';
 import Button from '../components/Button';
 import ButtonIcon from '../components/ButtonIcon';
 import ZoomUpImage from '../components/ZoomUpImage';
+import ModalDialogSelectChat from '../components/ModalDialogSelectChat';
+import { ImageChatContext } from '../utils/chatContext';
+import { exportImagesToPdf } from '../utils/exportImagesPdf';
 import {
   PiArrowClockwise,
   PiChatsCircle,
   PiDownload,
+  PiFilePdf,
   PiImages,
   PiPencilSimple,
   PiUpload,
+  PiX,
 } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -83,11 +88,14 @@ type StateType = {
   exchanges: Exchange[];
   // Chat the ongoing session is recorded into (all exchanges until clear)
   chatId?: string;
+  // Existing chat referenced as context (to summarize its conclusion)
+  chatContext?: ImageChatContext;
   setMode: (m: GptImageMode) => void;
   setPrompt: (s: string) => void;
   setSize: (s: GptImageSize) => void;
   setQuality: (q: GptImageQuality) => void;
   setN: (n: number) => void;
+  setChatContext: (c?: ImageChatContext) => void;
   addInputImages: (images: InputImage[]) => void;
   removeInputImage: (index: number) => void;
   addExchange: (exchange: Exchange, chatId?: string) => void;
@@ -105,6 +113,7 @@ const useGenerateImageGptPageState = create<StateType>((set) => {
     inputImages: [],
     exchanges: [],
     chatId: undefined,
+    chatContext: undefined,
   };
   return {
     ...INIT_STATE,
@@ -113,6 +122,7 @@ const useGenerateImageGptPageState = create<StateType>((set) => {
     setSize: (s) => set(() => ({ size: s })),
     setQuality: (q) => set(() => ({ quality: q })),
     setN: (n) => set(() => ({ n })),
+    setChatContext: (c) => set(() => ({ chatContext: c })),
     addInputImages: (images) =>
       set((state) => ({
         inputImages: [...state.inputImages, ...images].slice(
@@ -163,6 +173,8 @@ const GenerateImageGptPage: React.FC = () => {
     removeInputImage,
     exchanges,
     chatId,
+    chatContext,
+    setChatContext,
     addExchange,
     setExchanges,
     clear,
@@ -170,6 +182,8 @@ const GenerateImageGptPage: React.FC = () => {
   const { generateImage, editImage } = useGptImageApi();
   const { getFileDownloadSignedUrl } = useFileApi();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSelectChatOpen, setIsSelectChatOpen] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const timelineBottomRef = useRef<HTMLDivElement>(null);
 
   // Results persist in the store across navigation, but signed URLs expire
@@ -304,11 +318,27 @@ const GenerateImageGptPage: React.FC = () => {
     [inputImages, addInputImages, setMode, getFileDownloadSignedUrl, t]
   );
 
+  // Reference an existing chat: its transcript is sent along with the
+  // prompt so the image can summarize the conversation's conclusion
+  const onSelectChatContext = useCallback(
+    (context: ImageChatContext) => {
+      setChatContext(context);
+      if (prompt.length === 0) {
+        setPrompt(t('imageChatContext.defaultPrompt'));
+      }
+      // Summary slides read best in landscape — GPT Image has no 16:9,
+      // so use the closest landscape size
+      setSize('1536x1024');
+    },
+    [setChatContext, prompt, setPrompt, setSize, t]
+  );
+
   const generate = useCallback(async () => {
     setIsGenerating(true);
     try {
       const common = {
         prompt,
+        chatContext: chatContext?.transcript,
         size,
         quality,
         n,
@@ -348,6 +378,7 @@ const GenerateImageGptPage: React.FC = () => {
   }, [
     mode,
     prompt,
+    chatContext,
     size,
     quality,
     n,
@@ -360,6 +391,32 @@ const GenerateImageGptPage: React.FC = () => {
     setPrompt,
     t,
   ]);
+
+  // Bundle every image of the session timeline into a single PDF
+  const exportPdf = useCallback(async () => {
+    setIsExportingPdf(true);
+    try {
+      const s3Urls = exchanges.flatMap((exchange) =>
+        exchange.results.map((image) => image.s3Url)
+      );
+      const blobs = await Promise.all(
+        s3Urls.map(async (s3Url) => {
+          // Signed URLs expire after 60 seconds — always issue fresh ones
+          const signedUrl = await getFileDownloadSignedUrl(s3Url);
+          const res = await fetch(signedUrl);
+          if (!res.ok) {
+            throw new Error(`Download failed (${res.status})`);
+          }
+          return res.blob();
+        })
+      );
+      await exportImagesToPdf(blobs, `gpt-image-${Date.now()}.pdf`);
+    } catch (e) {
+      console.error(e);
+      toast.error(t('imagePdf.error.exportFailed'));
+    }
+    setIsExportingPdf(false);
+  }, [exchanges, getFileDownloadSignedUrl, t]);
 
   const downloadImage = useCallback(
     async (image: ResultImage, index: number) => {
@@ -395,10 +452,13 @@ const GenerateImageGptPage: React.FC = () => {
 
   const clearable = useMemo(() => {
     return (
-      (prompt.length > 0 || inputImages.length > 0 || exchanges.length > 0) &&
+      (prompt.length > 0 ||
+        inputImages.length > 0 ||
+        exchanges.length > 0 ||
+        !!chatContext) &&
       !isGenerating
     );
-  }, [prompt, inputImages, exchanges, isGenerating]);
+  }, [prompt, inputImages, exchanges, chatContext, isGenerating]);
 
   return (
     <div className="grid grid-cols-12 gap-4 p-4">
@@ -444,6 +504,43 @@ const GenerateImageGptPage: React.FC = () => {
             rows={4}
             required
           />
+
+          {/* Reference an existing chat to summarize its conclusion as an image */}
+          <div>
+            <div className="text-sm">{t('imageChatContext.label')}</div>
+            {chatContext ? (
+              <div className="my-2 flex items-center gap-x-2 rounded border px-2 py-1 text-sm">
+                <PiChatsCircle className="shrink-0 text-base" />
+                <span className="grow truncate">
+                  {chatContext.title}
+                  <span className="ml-1 text-xs text-gray-400">
+                    {t('imageChatContext.messageCount', {
+                      n: chatContext.messageCount,
+                    })}
+                  </span>
+                </span>
+                <ButtonIcon
+                  onClick={() => {
+                    setChatContext(undefined);
+                  }}
+                  title={t('imageChatContext.remove')}>
+                  <PiX className="text-base" />
+                </ButtonIcon>
+              </div>
+            ) : (
+              <div
+                className="text-aws-smile border-aws-smile my-2 flex w-full cursor-pointer flex-row items-center justify-center rounded-full border-2 bg-white p-1 text-sm hover:bg-gray-100"
+                onClick={() => {
+                  setIsSelectChatOpen(true);
+                }}>
+                <PiChatsCircle className="mr-1 text-base" />
+                {t('imageChatContext.select')}
+              </div>
+            )}
+            <p className="my-1 text-xs text-gray-400">
+              {t('imageChatContext.help')}
+            </p>
+          </div>
 
           {mode === 'edit' && (
             <div>
@@ -554,16 +651,29 @@ const GenerateImageGptPage: React.FC = () => {
             </div>
           ) : (
             <>
-              {chatId && (
-                <div className="mb-4 flex items-center justify-end">
+              <div className="mb-4 flex items-center justify-end gap-x-4">
+                {exchanges.length > 0 && (
+                  <button
+                    className="text-aws-smile flex items-center gap-x-1 text-sm hover:underline disabled:opacity-50"
+                    disabled={isExportingPdf}
+                    onClick={exportPdf}>
+                    {isExportingPdf ? (
+                      <PiArrowClockwise className="animate-spin text-base" />
+                    ) : (
+                      <PiFilePdf className="text-base" />
+                    )}
+                    {t('imagePdf.exportAll')}
+                  </button>
+                )}
+                {chatId && (
                   <Link
                     className="text-aws-smile flex items-center gap-x-1 text-sm hover:underline"
                     to={`/chat/${chatId}`}>
                     <PiChatsCircle className="text-base" />
                     {t('gptImage.viewInHistory')}
                   </Link>
-                </div>
-              )}
+                )}
+              </div>
               {/* Chat-like timeline: every prompt → result exchange of the
                   session stays visible, newest at the bottom */}
               <div className="flex flex-col gap-y-6">
@@ -621,6 +731,14 @@ const GenerateImageGptPage: React.FC = () => {
           )}
         </Card>
       </div>
+
+      <ModalDialogSelectChat
+        isOpen={isSelectChatOpen}
+        onClose={() => {
+          setIsSelectChatOpen(false);
+        }}
+        onSelect={onSelectChatContext}
+      />
     </div>
   );
 };

@@ -91,8 +91,14 @@ export const handler = async (
   } else {
     const imageReq = req as GenerateImageGeminiRequest;
     inputMedia = imageReq.images;
+    // A referenced chat transcript is prepended for the model call only —
+    // the recorded chat history keeps just the user's own prompt
+    const modelPrompt = imageReq.chatContext
+      ? `${imageReq.chatContext}\n\n${imageReq.prompt}`
+      : imageReq.prompt;
     outputMedia = await generateImageGemini({
       ...imageReq,
+      prompt: modelPrompt,
       images: await resolveInputMedia(imageReq.images ?? []),
     });
   }

@@ -1,6 +1,6 @@
 // Fork custom: Gemini (Google Gemini API) image / video generation.
 // Authentication is Workload Identity Federation (no API key) — see
-// docs/ja/GEMINI.md for the Google-side setup.
+// docs/ja/DEPLOY_GEMINI_GPT_IMAGE.md for the Google-side setup.
 
 export type GeminiMode = 'image' | 'video';
 
@@ -30,6 +30,9 @@ export type GeminiInputMedia = {
 
 export type GenerateImageGeminiRequest = {
   prompt: string;
+  // Transcript of a referenced chat conversation. Prepended to the prompt
+  // for the model call only — the recorded chat history keeps just prompt
+  chatContext?: string;
   aspectRatio?: string;
   imageSize?: GeminiImageSize;
   n?: number;
