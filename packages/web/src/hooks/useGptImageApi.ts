@@ -13,20 +13,30 @@ const invoke = (
   mode: GptImageMode,
   request: GenerateImageGptRequest | EditImageGptRequest,
   // Chat ID of an ongoing interactive session (appends to that chat)
-  chatId?: string
+  chatId?: string,
+  // Usecase path the generation is recorded under (defaults server-side)
+  usecase?: GptImageInvokeEvent['usecase']
 ): Promise<GenerateImageGptResponse> =>
   invokeMediaLambda<GptImageInvokeEvent, GenerateImageGptResponse>(
     import.meta.env.VITE_APP_GPT_IMAGE_FUNCTION_ARN ?? '',
-    { mode, request, chatId }
+    { mode, request, chatId, usecase }
   );
 
 const useGptImageApi = () => {
   return {
-    generateImage: (params: GenerateImageGptRequest, chatId?: string) => {
-      return invoke('generate', params, chatId);
+    generateImage: (
+      params: GenerateImageGptRequest,
+      chatId?: string,
+      usecase?: GptImageInvokeEvent['usecase']
+    ) => {
+      return invoke('generate', params, chatId, usecase);
     },
-    editImage: (params: EditImageGptRequest, chatId?: string) => {
-      return invoke('edit', params, chatId);
+    editImage: (
+      params: EditImageGptRequest,
+      chatId?: string,
+      usecase?: GptImageInvokeEvent['usecase']
+    ) => {
+      return invoke('edit', params, chatId, usecase);
     },
   };
 };

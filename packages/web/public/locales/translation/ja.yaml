@@ -822,6 +822,92 @@ language:
   th: タイ語
   vi: ベトナム語
   zh: 中国語
+manga:
+  aspectRatio: ページのアスペクト比
+  castPhotos:
+    characterSheetNote: 写真を使う場合は、キャラクター設定画の生成を ON にすると顔立ちが安定します
+    error:
+      tooMany: 写真は最大 {{max}} 枚までです
+      unsupportedFileType: PNG / JPEG / WebP の画像をアップロードしてください
+      uploadFailed: 写真のアップロードに失敗しました。再度お試しください
+    help: 写真の人物を漫画のキャラクターとして登場させます (最大 {{max}} 枚、PNG / JPEG / WebP)。顔がはっきり写った正面の写真がおすすめです
+    label: 登場人物の写真 (任意)
+    namePlaceholder: '名前 (例: 山田 太郎)'
+    nameRequired: 写真ごとに登場人物の名前を入力してください
+    notePlaceholder: 役割や性格などの補足 (任意)
+    plannerModelNote: 写真を読み取るため、画像に対応したモデルのみ選択できます
+    remove: この写真を削除
+    upload: 人物写真をアップロード
+    uploading: アップロード中...
+  characterSheet:
+    help: 最初にキャラクター設定画を 1 枚生成し、以降の全ページで参照画像として渡します。登場人物の見た目が安定します (画像 1 枚分のコストが増えます)
+    label: キャラクター設定画を生成する
+  characterSheetTitle: キャラクター設定画
+  chatContextHelp: 選択したチャットの会話内容をシナリオの元ネタとして使います。シナリオ欄と併用できます
+  clear: クリア
+  download: ダウンロード
+  downloadPdf: PDF に保存
+  error:
+    downloadFailed: ダウンロードに失敗しました。再度お試しください
+    generationFailed: '漫画の生成に失敗しました: {{error}}'
+  generate: 漫画を生成
+  history:
+    characterSheet: '{{title}} キャラクター設定画'
+    page: '{{title}} P{{page}}: {{summary}}'
+  imageModel: 作画モデル
+  imageModelOption: '作画: {{name}}'
+  imageSize: 解像度
+  imageSizeHelp: モデルが対応していない解像度は自動調整されます。既定は PDF のサイズを抑えるため最小の解像度です。セリフを読みやすくするには 2K 以上を選択してください (ファイルサイズは大きくなります)
+  noResults: 生成した漫画がここに表示されます
+  page:
+    label: ページ {{n}}
+    panels: コマ構成
+  pageCount:
+    auto: 自動 (AI が判断)
+    help: 自動にすると、シナリオの内容から AI が最大 {{max}} ページの範囲でページ数を決めます
+    label: ページ数
+  pageSize: ページサイズ
+  plan:
+    characters: 登場人物
+    pageCount: 全 {{n}} ページ
+    style: 画風の設定
+  plannerModel: 構成を考える AI モデル
+  plannerModelOption: '構成: {{name}}'
+  qualities:
+    auto: 自動
+    high: 高
+    low: 低
+    medium: 中
+  quality: 品質
+  readingDirection:
+    label: 読む方向
+    ltr: 左から右 (アメコミ)
+    rtl: 右から左 (日本の漫画)
+  regenerate: このページを再生成
+  scenario:
+    help: 物語のあらすじのほか、登場人物の設定やオチの方向性といった指示、テイストの希望も自由に書けます
+    label: シナリオ・指示
+    placeholder: 漫画にしたい物語や題材、指示を入力してください
+  status:
+    characterSheet: キャラクター設定画を生成中...
+    page: '{{current}} / {{total}} ページ目を生成中...'
+    planning: AI がページ割り・コマ割りを検討中...
+  taste:
+    detailLabel: テイストの追加指定 (任意)
+    detailPlaceholder: 画風の細かい希望を入力してください
+    label: テイスト
+  tastes:
+    american: アメコミ風
+    anime: アニメ風 (カラー)
+    chibi: デフォルメ・ちび
+    seinen: 青年漫画・劇画
+    shojo: 少女漫画
+    shonen: 少年漫画
+    watercolor: 水彩・絵本風
+    yonkoma: 4 コマ・ギャグ
+  timeNote: ページ数に応じて数分〜十数分かかります。生成中はこのタブを閉じないでください
+  title: 漫画生成
+  viewInHistory: チャット履歴で表示
 mcp_chat:
   loading_message: MCP サーバーと接続しています。時間がかかる場合があります。そのまま待機してください...
   title: MCP チャット
@@ -921,6 +1007,7 @@ navigation:
   home: ホーム
   imageGeneration: 画像生成
   imageStudio: 画像生成・編集
+  manga: 漫画生成
   meetingMinutes: 議事録生成
   promptOptimization: プロンプト最適化
   ragChat: RAG チャット

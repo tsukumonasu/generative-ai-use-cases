@@ -977,6 +977,92 @@ language:
   th: Thai
   vi: Vietnamese
   zh: Chinese
+manga:
+  aspectRatio: Page Aspect Ratio
+  castPhotos:
+    characterSheetNote: When using photos, turning on the character reference sheet keeps the faces consistent.
+    error:
+      tooMany: You can upload up to {{max}} photos
+      unsupportedFileType: Please upload a PNG / JPEG / WebP image
+      uploadFailed: Failed to upload the photo. Please try again
+    help: The people in the photos appear as manga characters (up to {{max}} photos, PNG / JPEG / WebP). Front-facing photos with a clearly visible face work best.
+    label: Photos of the cast (optional)
+    namePlaceholder: Name (e.g. Taro Yamada)
+    nameRequired: Please enter a character name for every photo
+    notePlaceholder: Role, personality, etc. (optional)
+    plannerModelNote: Only models that support image input can read the photos.
+    remove: Remove this photo
+    upload: Upload photos
+    uploading: Uploading...
+  characterSheet:
+    help: Draws a character reference sheet first and passes it to every page as a reference image, keeping the cast consistent (costs one extra image).
+    label: Generate a character reference sheet
+  characterSheetTitle: Character Reference Sheet
+  chatContextHelp: Uses the selected conversation as source material for the story. Can be combined with the scenario field.
+  clear: Clear
+  download: Download
+  downloadPdf: Save as PDF
+  error:
+    downloadFailed: Download failed. Please try again
+    generationFailed: 'Failed to generate the manga: {{error}}'
+  generate: Generate Manga
+  history:
+    characterSheet: '{{title}} character reference sheet'
+    page: '{{title}} P{{page}}: {{summary}}'
+  imageModel: Drawing model
+  imageModelOption: 'Drawing: {{name}}'
+  imageSize: Resolution
+  imageSizeHelp: Resolutions the model does not support are adjusted automatically. The default is the smallest size to keep the PDF small; pick 2K or higher for legible dialogue (at the cost of a much larger file).
+  noResults: The generated manga will be displayed here
+  page:
+    label: Page {{n}}
+    panels: Panel Breakdown
+  pageCount:
+    auto: Auto (decided by AI)
+    help: With Auto, the AI decides the page count from the scenario, up to {{max}} pages.
+    label: Number of Pages
+  pageSize: Page Size
+  plan:
+    characters: Characters
+    pageCount: '{{n}} page(s) in total'
+    style: Art Style
+  plannerModel: AI Model for Storyboarding
+  plannerModelOption: 'Storyboard: {{name}}'
+  qualities:
+    auto: Auto
+    high: High
+    low: Low
+    medium: Medium
+  quality: Quality
+  readingDirection:
+    label: Reading Direction
+    ltr: Left to right (Western comic)
+    rtl: Right to left (Japanese manga)
+  regenerate: Regenerate this page
+  scenario:
+    help: Besides the outline of the story, you can freely add instructions such as character settings, how it should end, and the taste you want.
+    label: Scenario & Instructions
+    placeholder: Enter the story, subject, or instructions you want turned into a manga
+  status:
+    characterSheet: Generating the character reference sheet...
+    page: Generating page {{current}} of {{total}}...
+    planning: The AI is planning the pages and panel layout...
+  taste:
+    detailLabel: Additional Style Notes (optional)
+    detailPlaceholder: Enter any detailed art style requests
+    label: Taste
+  tastes:
+    american: American comic
+    anime: Anime (colour)
+    chibi: Chibi / deformed
+    seinen: Seinen / gekiga
+    shojo: Shojo manga
+    shonen: Shonen manga
+    watercolor: Watercolour picture book
+    yonkoma: 4-koma gag
+  timeNote: Generation takes several minutes depending on the page count. Do not close this tab while it runs.
+  title: Manga Generation
+  viewInHistory: View in chat history
 mcp_chat:
   loading_message: Connecting to MCP server. This may take some time. Please wait...
   title: MCP Chat
@@ -1075,6 +1161,7 @@ navigation:
   home: Home
   imageGeneration: Image Generation
   imageStudio: Image Generation & Editing
+  manga: Manga Generation
   meetingMinutes: Meeting Minutes
   promptOptimization: Prompt Optimization
   ragChat: RAG Chat

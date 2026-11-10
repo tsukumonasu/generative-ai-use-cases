@@ -1,5 +1,5 @@
 // One image-model call for the pages that offer both providers
-// in one model selector. Builds the request of the
+// in one model selector (image page, manga page). Builds the request of the
 // selected provider (GPT Image / Gemini), calls its Lambda and normalises the
 // result to the permanent S3 URLs of the generated images.
 import { useCallback } from 'react';
@@ -9,6 +9,7 @@ import {
   GeminiInputMedia,
   GptImageBackground,
   GptImageInputImage,
+  GptImageInvokeEvent,
   GptImageOutputFormat,
   GptImageQuality,
   GptImageSize,
@@ -26,6 +27,8 @@ export type ImageRenderRequest = {
   // '' = not sent: the Lambda uses its default model
   modelId: string;
   prompt: string;
+  // Recorded in the chat history instead of the prompt
+  historyPrompt?: string;
   // Transcript of a referenced chat, prepended for the model call only
   chatContext?: string;
   n: number;
@@ -49,6 +52,9 @@ export type ImageRenderRequest = {
   };
   // Chat of the ongoing session (the generation is appended to it)
   sessionChatId?: string;
+  // Usecase the generation is recorded under (defaults server-side to the
+  // provider's own); only usecases both providers accept
+  usecase?: Extract<GptImageInvokeEvent['usecase'], '/manga'>;
 };
 
 export type ImageRenderResult = {
@@ -69,6 +75,7 @@ const useImageRender = () => {
       if (req.provider === 'gpt') {
         const common = {
           prompt: req.prompt,
+          historyPrompt: req.historyPrompt,
           chatContext: req.chatContext,
           size: req.gpt.size,
           quality: req.gpt.quality,
@@ -83,15 +90,17 @@ const useImageRender = () => {
         const res = hasImages
           ? await editGptImage(
               { ...common, images: req.images! },
-              req.sessionChatId
+              req.sessionChatId,
+              req.usecase
             )
-          : await generateGptImage(common, req.sessionChatId);
+          : await generateGptImage(common, req.sessionChatId, req.usecase);
         return { s3Urls: res.images, chatId: res.chatId };
       }
 
       const res = await generateGeminiImage(
         {
           prompt: req.prompt,
+          historyPrompt: req.historyPrompt,
           chatContext: req.chatContext,
           aspectRatio: req.gemini.aspectRatio,
           imageSize: req.gemini.imageSize,
@@ -100,7 +109,8 @@ const useImageRender = () => {
           ...modelField,
           ...(hasImages ? { images: req.images } : {}),
         },
-        req.sessionChatId
+        req.sessionChatId,
+        req.usecase
       );
       return { s3Urls: res.files, chatId: res.chatId };
     },

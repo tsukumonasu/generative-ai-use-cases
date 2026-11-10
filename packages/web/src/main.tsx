@@ -26,6 +26,7 @@ import WebContent from './pages/WebContent';
 import GenerateImagePage from './pages/GenerateImagePage';
 import GenerateImageStudioPage from './pages/GenerateImageStudioPage';
 import GenerateVideoGeminiPage from './pages/GenerateVideoGeminiPage';
+import GenerateMangaPage from './pages/GenerateMangaPage';
 import {
   IMAGE_STUDIO_PATHNAME,
   VIDEO_STUDIO_PATHNAME,
@@ -173,6 +174,13 @@ const routes: RouteObject[] = [
     ? {
         path: VIDEO_STUDIO_PATHNAME,
         element: <GenerateVideoGeminiPage />,
+      }
+    : null,
+  // The manga page renders its pages with either image provider
+  geminiEnabled || gptImageEnabled
+    ? {
+        path: '/manga',
+        element: <GenerateMangaPage />,
       }
     : null,
   videoGenModelIds.length > 0 && enabled('video')

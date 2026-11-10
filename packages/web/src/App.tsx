@@ -17,6 +17,7 @@ import {
   PiGlobe,
   PiX,
   PiFilmSlate,
+  PiChatTeardropText,
   PiRobot,
   PiVideoCamera,
   PiFlowArrow,
@@ -266,6 +267,15 @@ const App: React.FC = () => {
           label: t('navigation.geminiVideo'),
           to: VIDEO_STUDIO_PATHNAME,
           icon: <PiFilmSlate />,
+          display: 'usecase' as const,
+        }
+      : null,
+    // The manga page renders its pages with either image provider
+    geminiEnabled || gptImageEnabled
+      ? {
+          label: t('navigation.manga'),
+          to: '/manga',
+          icon: <PiChatTeardropText />,
           display: 'usecase' as const,
         }
       : null,

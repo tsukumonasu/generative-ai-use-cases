@@ -18,6 +18,7 @@ const EXCLUDED_USECASES = [
   '/gpt-image',
   '/gemini-image',
   '/gemini-video',
+  '/manga',
   '/image',
   '/video',
 ];

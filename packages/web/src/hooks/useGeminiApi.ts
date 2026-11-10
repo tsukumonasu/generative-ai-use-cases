@@ -13,17 +13,23 @@ const invoke = (
   mode: GeminiMode,
   request: GenerateImageGeminiRequest | GenerateVideoGeminiRequest,
   // Chat ID of an ongoing interactive session (appends to that chat)
-  chatId?: string
+  chatId?: string,
+  // Usecase path the generation is recorded under (defaults server-side)
+  usecase?: GeminiInvokeEvent['usecase']
 ): Promise<GenerateGeminiResponse> =>
   invokeMediaLambda<GeminiInvokeEvent, GenerateGeminiResponse>(
     import.meta.env.VITE_APP_GEMINI_FUNCTION_ARN ?? '',
-    { mode, request, chatId }
+    { mode, request, chatId, usecase }
   );
 
 const useGeminiApi = () => {
   return {
-    generateImage: (params: GenerateImageGeminiRequest, chatId?: string) => {
-      return invoke('image', params, chatId);
+    generateImage: (
+      params: GenerateImageGeminiRequest,
+      chatId?: string,
+      usecase?: GeminiInvokeEvent['usecase']
+    ) => {
+      return invoke('image', params, chatId, usecase);
     },
     generateVideo: (params: GenerateVideoGeminiRequest, chatId?: string) => {
       return invoke('video', params, chatId);
