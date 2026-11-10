@@ -30,6 +30,7 @@ import { ResearchAgentCoreStack } from './research-agent-core-stack';
 import { ClosedNetworkStack } from './closed-network-stack';
 import * as path from 'path';
 import { StackOutputs } from './construct/stack-outputs';
+import { Backlog } from './construct/backlog';
 import { REMOTE_OUTPUT_KEYS } from './remote-output-keys';
 
 export interface GenerativeAiUseCasesStackProps extends StackProps {
@@ -290,6 +291,8 @@ export class GenerativeAiUseCasesStack extends Stack {
       knowledgeBaseDataSourceBucketName:
         props.knowledgeBaseDataSourceBucketName,
       dataSourceBucketName: rag?.dataSourceBucketName,
+      // Backlog page: the monolith reads users' Backlog tokens
+      userTokenVaultEnabled: params.backlogEnabled,
     });
 
     // WAF
@@ -428,6 +431,8 @@ export class GenerativeAiUseCasesStack extends Stack {
       webBucket: props.webBucket,
       // Branding
       brandingConfig: params.brandingConfig,
+      // Backlog page
+      backlogEnabled: params.backlogEnabled,
     });
 
     // Update API handler with web URL for CORS.
@@ -672,6 +677,27 @@ export class GenerativeAiUseCasesStack extends Stack {
     if (params.ragEnabled && rag?.kendraIndexId) {
       new CfnOutput(this, 'IndexId', {
         value: rag.kendraIndexId,
+      });
+    }
+
+    // Backlog page: per-user Backlog OAuth through the AgentCore Identity
+    // Token Vault. Created only when backlogEnabled, so the resources and the
+    // outputs are unchanged for deployments without it.
+    if (params.backlogEnabled) {
+      new Backlog(this, 'Backlog', {
+        env: params.env,
+        api: api.api,
+        authorizer: api.authorizer,
+        apiHandler: api.apiHandler,
+        credentialProviderName: params.backlogCredentialProviderName,
+        spaceDomain: params.backlogSpaceDomain,
+        allowedUsers: params.backlogAllowedUsers,
+        inProgressOnCreateProjects: params.backlogInProgressOnCreateProjects,
+        // Same list as CORS, so an origin added there is also a return URL
+        webOrigins: allowedOrigins,
+      });
+      new CfnOutput(this, 'BacklogEnabled', {
+        value: 'true',
       });
     }
 

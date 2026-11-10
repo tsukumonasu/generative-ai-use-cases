@@ -104,6 +104,8 @@ import { router as ragRouter } from './routes/rag';
 import { router as ragKnowledgeBaseRouter } from './routes/ragKnowledgeBase';
 import { router as agentBuilderRouter } from './routes/agentBuilder';
 import { router as transcribeRouter } from './routes/transcribe';
+// Backlog account linking and the Backlog page (Backlog construct)
+import { router as backlogRouter } from './routes/backlog';
 import { router as meetingMinutesRouter } from './routes/meetingMinutes';
 import { router as speechToSpeechRouter } from './routes/speechToSpeech';
 
@@ -122,6 +124,8 @@ app.use('/rag', ragRouter);
 app.use('/rag-knowledge-base', ragKnowledgeBaseRouter);
 app.use('/agents', agentBuilderRouter);
 app.use('/transcribe', transcribeRouter);
+// Backlog account linking and the Backlog page (Backlog construct)
+app.use('/backlog', backlogRouter);
 app.use('/meeting-minutes', meetingMinutesRouter);
 app.use('/speech-to-speech', speechToSpeechRouter);
 

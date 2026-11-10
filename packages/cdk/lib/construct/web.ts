@@ -62,6 +62,8 @@ export interface WebProps {
   readonly mcpEnabled: boolean;
   readonly mcpEndpoint: string | null;
   readonly mcpServersConfig?: string;
+  // Backlog page
+  readonly backlogEnabled?: boolean;
   readonly webBucket?: s3.Bucket;
   readonly agentCoreEnabled: boolean;
   readonly agentCoreGenericRuntime?: AgentCoreConfiguration;
@@ -301,6 +303,9 @@ export class Web extends Construct {
         VITE_APP_MCP_ENABLED: props.mcpEnabled.toString(),
         VITE_APP_MCP_ENDPOINT: props.mcpEndpoint ?? '',
         VITE_APP_MCP_SERVERS_CONFIG: props.mcpServersConfig ?? '',
+        // Only set when enabled (the frontend treats a missing value as off),
+        // so deployments without Backlog build as before
+        ...(props.backlogEnabled ? { VITE_APP_BACKLOG_ENABLED: 'true' } : {}),
         VITE_APP_AGENT_CORE_ENABLED: props.agentCoreEnabled.toString(),
         VITE_APP_AGENT_CORE_GENERIC_RUNTIME: JSON.stringify(
           props.agentCoreGenericRuntime

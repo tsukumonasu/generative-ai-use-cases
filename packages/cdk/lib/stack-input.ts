@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+// A Backlog space host. Requests carrying users' Backlog tokens go to this
+// host, so it must be a Backlog domain and nothing else.
+export const BACKLOG_SPACE_DOMAIN_PATTERN =
+  /^[a-z0-9][a-z0-9-]*\.(backlog\.jp|backlog\.com|backlogtool\.com)$/;
+
 // Base schema without refine
 const baseStackInputSchema = z.object({
   account: z.string().default(process.env.CDK_DEFAULT_ACCOUNT ?? ''),
@@ -184,6 +189,22 @@ const baseStackInputSchema = z.object({
   researchAgentTavilyApiKey: z.string().default(''),
   // MCP
   mcpEnabled: z.boolean().default(false),
+  // Backlog page. Each user links their own Backlog account (OAuth 2.0) and
+  // the page reads and writes Backlog with that user's token. See
+  // docs/en/BACKLOG.md. Nothing is created unless backlogEnabled is true.
+  backlogEnabled: z.boolean().default(false),
+  // The Backlog space, e.g. "example.backlog.com"
+  backlogSpaceDomain: z.string().default(''),
+  // Name of the AgentCore Identity OAuth2 credential provider (CustomOauth2
+  // vendor). It is created by hand with the CLI so that the client secret
+  // never enters cdk.json, git or the CloudFormation template.
+  backlogCredentialProviderName: z.string().default(''),
+  // Users (cognito:username, not email) who may link Backlog. ["*"] allows
+  // every signed-in user. No one can while this is empty.
+  backlogAllowedUsers: z.array(z.string()).default([]),
+  // Projects (keys, e.g. ["PROJ"]) whose issues registered from GenU are set
+  // to In Progress right after they are created
+  backlogInProgressOnCreateProjects: z.array(z.string()).default([]),
   // Guardrail
   guardrailEnabled: z.boolean().default(false),
   // Usecase builder
@@ -240,6 +261,25 @@ const baseStackInputSchema = z.object({
 
 // Common Validator with refine
 export const stackInputSchema = baseStackInputSchema
+  .refine(
+    (data) =>
+      !data.backlogEnabled || data.backlogCredentialProviderName.length > 0,
+    {
+      message:
+        'backlogCredentialProviderName is required when backlogEnabled is true',
+      path: ['backlogCredentialProviderName'],
+    }
+  )
+  .refine(
+    (data) =>
+      !data.backlogEnabled ||
+      BACKLOG_SPACE_DOMAIN_PATTERN.test(data.backlogSpaceDomain),
+    {
+      message:
+        'backlogSpaceDomain must be a Backlog space such as "example.backlog.com" when backlogEnabled is true',
+      path: ['backlogSpaceDomain'],
+    }
+  )
   .refine(
     (data) => {
       // If searchApiKey is provided, searchEngine must also be provided

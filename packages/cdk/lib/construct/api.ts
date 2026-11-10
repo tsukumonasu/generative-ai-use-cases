@@ -84,6 +84,9 @@ export interface BackendApiProps {
   readonly additionalS3Buckets?: Bucket[];
   // CORS
   readonly webUrl?: string;
+  // Whether the monolith serves users' OAuth tokens from the AgentCore
+  // Identity Token Vault (Google Workspace MCP)
+  readonly userTokenVaultEnabled?: boolean;
 }
 
 export class Api extends Construct {
@@ -97,6 +100,7 @@ export class Api extends Construct {
   readonly imageGenerationModelIds: ModelConfiguration[];
   readonly videoGenerationModelIds: ModelConfiguration[];
   readonly endpointNames: ModelConfiguration[];
+  readonly authorizer: CognitoUserPoolsAuthorizer;
   readonly agents: AgentInfo[];
   readonly fileBucket: Bucket;
 
@@ -205,6 +209,17 @@ export class Api extends Construct {
       memorySize: 1024,
       bundling: {
         ...bedrockSdkBundling,
+        // Ship the AgentCore data plane client instead of relying on the SDK
+        // version the Lambda runtime includes, which may predate
+        // CompleteResourceTokenAuth. Same install step as the Bedrock SDKs.
+        ...(props.userTokenVaultEnabled
+          ? {
+              nodeModules: [
+                ...bedrockSdkModules,
+                '@aws-sdk/client-bedrock-agentcore',
+              ],
+            }
+          : {}),
         commandHooks: {
           beforeBundling: () => [],
           beforeInstall: () => [],
@@ -587,6 +602,9 @@ export class Api extends Construct {
     const authorizer = new CognitoUserPoolsAuthorizer(this, 'Authorizer', {
       cognitoUserPools: [userPool],
     });
+    // Exposed so that feature constructs (e.g. GoogleWorkspace) can attach
+    // authenticated methods to the same RestApi.
+    this.authorizer = authorizer;
 
     const commonAuthorizerProps: Partial<MethodOptions> = {
       authorizationType: AuthorizationType.COGNITO,

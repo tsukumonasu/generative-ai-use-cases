@@ -53,6 +53,7 @@ export VITE_APP_SPEECH_TO_SPEECH_EVENT_API_ENDPOINT=$(extract_value "$stack_outp
 export VITE_APP_SPEECH_TO_SPEECH_MODEL_IDS=$(extract_value "$stack_output" SpeechToSpeechModelIds)
 export VITE_APP_MCP_ENABLED=$(extract_value "$stack_output" McpEnabled)
 export VITE_APP_MCP_ENDPOINT=$(extract_value "$stack_output" McpEndpoint)
+export VITE_APP_BACKLOG_ENABLED=$(extract_value "$stack_output" BacklogEnabled)
 export VITE_APP_AGENT_CORE_ENABLED=$(extract_value "$stack_output" AgentCoreEnabled)
 export VITE_APP_AGENT_CORE_GENERIC_RUNTIME=$(extract_value "$stack_output" AgentCoreGenericRuntime)
 export VITE_APP_AGENT_CORE_AGENT_BUILDER_ENABLED=$(extract_value "$stack_output" AgentCoreAgentBuilderEnabled)
