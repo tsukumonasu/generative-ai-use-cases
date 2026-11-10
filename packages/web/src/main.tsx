@@ -5,6 +5,7 @@ import AuthWithUserpool from './components/AuthWithUserpool';
 import AuthWithSAML from './components/AuthWithSAML';
 import './index.css';
 import {
+  Navigate,
   RouterProvider,
   createBrowserRouter,
   RouteObject,
@@ -23,6 +24,14 @@ import RagPage from './pages/RagPage';
 import RagKnowledgeBasePage from './pages/RagKnowledgeBasePage';
 import WebContent from './pages/WebContent';
 import GenerateImagePage from './pages/GenerateImagePage';
+import GenerateImageStudioPage from './pages/GenerateImageStudioPage';
+import GenerateVideoGeminiPage from './pages/GenerateVideoGeminiPage';
+import {
+  IMAGE_STUDIO_PATHNAME,
+  VIDEO_STUDIO_PATHNAME,
+  geminiEnabled,
+  gptImageEnabled,
+} from './utils/mediaModels';
 import GenerateVideoPage from './pages/GenerateVideoPage';
 import OptimizePromptPage from './pages/OptimizePromptPage';
 import TranscribePage from './pages/TranscribePage';
@@ -141,6 +150,29 @@ const routes: RouteObject[] = [
     ? {
         path: '/image',
         element: <GenerateImagePage />,
+      }
+    : null,
+  // GPT Image and Gemini share one image page, where the model is picked
+  geminiEnabled || gptImageEnabled
+    ? {
+        path: IMAGE_STUDIO_PATHNAME,
+        element: <GenerateImageStudioPage />,
+      }
+    : null,
+  // Chats are recorded under the provider's usecase; these paths lead to
+  // the shared page
+  ...['/gpt-image', '/gemini-image'].map((path) =>
+    geminiEnabled || gptImageEnabled
+      ? {
+          path,
+          element: <Navigate to={IMAGE_STUDIO_PATHNAME} replace />,
+        }
+      : null
+  ),
+  geminiEnabled
+    ? {
+        path: VIDEO_STUDIO_PATHNAME,
+        element: <GenerateVideoGeminiPage />,
       }
     : null,
   videoGenModelIds.length > 0 && enabled('video')

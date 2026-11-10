@@ -517,6 +517,46 @@ files:
     videoCountExceeded: Please limit video files to {{maxCount}} or fewer
 flow:
   title: Flow Chat
+geminiVideo:
+  aspectRatio: Aspect ratio
+  aspectRatios:
+    landscape: '16:9 (landscape)'
+    portrait: '9:16 (portrait)'
+  continueEditing: Continue editing the last video
+  description: 'Describe a video to generate it. Attached images are references (up to {{maxImages}}); an attached video (MP4 / WebM, up to {{maxVideoMb}}MB) is edited. Use "Edit this video" on a result to keep refining it.'
+  download: Download
+  duration: Length
+  durationHelp: The length picked here overrides any length written in the prompt. Longer videos take longer to generate.
+  editThisVideo: Edit this video
+  error:
+    downloadFailed: Download failed. Please try again
+    fileTooLarge: The images are too large in total (max 4MB)
+    generationFailed: 'Video generation failed: {{error}}'
+    tooManyImages: 'You can attach up to {{max}} images'
+    unsupportedFileType: 'Unsupported file type (images: PNG / JPEG / WebP, videos: MP4 / WebM)'
+    uploadFailed: Video upload failed. Please try again
+    videoTooLarge: 'The video file is too large (max {{max}}MB)'
+  generating: Generating the video. This can take a few minutes
+  generationTimeNote: Video generation can take a few minutes
+  imageUse: Image use
+  imageUseHelp: With Auto the model decides from the prompt and the images. Pick one only when it gets it wrong.
+  imageUses:
+    auto: Auto
+    image_to_video: First frame
+    reference_to_video: Reference for people or objects
+  noResults: Generated videos appear here
+  placeholder:
+    edit: 'Describe the change (e.g. make the sky a sunset, keep everything else)'
+    generate: Describe the video to generate (be specific about camera and subject motion)
+  resolution: Resolution
+  resolutionHelp: 360p is a fast draft; 1080p and 4K are upscaled from 720p (no extra detail, larger files).
+  seconds: '{{n}}s'
+  settings: Video settings
+  settingsDone: Close
+  settingsInheritedHelp: When editing a video, the aspect ratio, length and resolution of the source video are kept.
+  stopEditing: Stop continuing the edit
+  title: Video Generation & Editing
+  viewInHistory: View in chat history
 generateImage:
   add_color: Add Color
   assistant:
@@ -628,6 +668,86 @@ generateText:
   title: Text Generation
 image:
   load_error: '[Image error: {{error}}]'
+imageAutoPlan:
+  autoCountHelp: The AI decides how many images to generate (up to {{max}}) and what each image should show, based on the referenced chat
+  generatingProgress: Generating image {{current}} of {{total}}...
+  model: AI model for planning
+  planning: AI is planning the image set...
+imageChatContext:
+  defaultPrompt: Summarize this conversation as presentation slide images, split into an appropriate number of slides for clarity
+  error:
+    emptyChat: This chat has no messages
+    loadFailed: Failed to load the chat history. Please try again
+  label: Reference chat history (optional)
+  loadMore: Load more
+  messageCount: ({{n}} messages)
+  noChats: No chat history
+  remove: Remove reference
+  select: Select chat history
+  selectChat: Select a chat to reference
+imagePdf:
+  error:
+    exportFailed: Failed to create the PDF. Please try again
+  exportAll: Save as PDF
+imageStudio:
+  aspectRatio: Aspect ratio
+  auto: Auto
+  background: Background
+  backgroundHelp: Transparent suits logos and cut-outs. The format is then PNG or WebP.
+  backgrounds:
+    opaque: Opaque
+    transparent: Transparent
+  clearInputImages: Remove all attached images
+  compression: Compression quality
+  compressionHelp: A lower number makes the file smaller and the image less sharp.
+  description: Describe an image to generate it. Attach images (or use "Edit this image" on a result) to edit them, or reference a chat to sum it up in images. Pick the model in the input box below.
+  download: Download
+  editThisImage: Edit this image
+  error:
+    downloadFailed: Download failed. Please try again
+    fileTooLarge: The images are too large in total (max 4MB)
+    generationFailed: 'Image generation failed: {{error}}'
+    tooManyImages: 'You can attach up to {{max}} images'
+    unsupportedFileType: Unsupported file type (PNG / JPEG / WebP only)
+  generating: Generating images
+  gifFrameDuration: Time per frame
+  gifFrames: Frames
+  gifHelp: A GIF is a short animation of frames x time per frame. Describe the motion in the prompt.
+  help: The settings depend on the selected model. The common ones can also be changed right in the input box. Larger and higher-quality images also make the PDF of the session larger.
+  imageSize: Resolution
+  noResults: Generated images appear here
+  numberOfImages: Number of images
+  outputFormat: Format
+  outputFormatHelp: Photo-like images get smaller as JPEG or WebP. GIF makes an animation.
+  outputFormats:
+    gif: GIF (animation)
+    jpeg: JPEG
+    png: PNG
+    webp: WebP
+  placeholder:
+    chat: Describe what to make from the referenced chat
+    edit: Describe how to change the attached images
+    generate: Describe the image to generate
+  qualities:
+    high: High
+    low: Low
+    max: Max
+    medium: Medium
+    xhigh: Extra high
+  quality: Quality
+  seconds: '{{n}}s'
+  settings: Image settings
+  settingsDone: Close
+  size: Size
+  thinkingLevel: Thinking
+  thinkingLevelHelp: More thinking makes text-heavy figures and complex layouts more accurate, at more time and cost.
+  thinkingLevels:
+    default: Model default
+    high: High
+    medium: Medium
+    minimal: Minimal
+  title: Image Generation & Editing
+  viewInHistory: View in chat history
 inputs:
   attachment: Attachment
   model: Model
@@ -951,8 +1071,10 @@ navigation:
   chat: Chat
   diagramGeneration: Diagram Generation
   flowChat: Flow Chat
+  geminiVideo: Video Generation & Editing
   home: Home
   imageGeneration: Image Generation
+  imageStudio: Image Generation & Editing
   meetingMinutes: Meeting Minutes
   promptOptimization: Prompt Optimization
   ragChat: RAG Chat

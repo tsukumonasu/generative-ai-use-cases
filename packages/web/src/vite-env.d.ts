@@ -45,6 +45,15 @@ interface ImportMetaEnv {
   readonly VITE_APP_BRANDING_LOGO_PATH: string;
   readonly VITE_APP_BRANDING_TITLE: string;
   readonly VITE_APP_MCP_SERVERS_CONFIG: string;
+  // GPT Image / Gemini image and video generation. Unset unless the feature
+  // is configured in cdk.json. The model lists are JSON arrays, default first.
+  readonly VITE_APP_GPT_IMAGE_ENABLED?: string;
+  readonly VITE_APP_GPT_IMAGE_FUNCTION_ARN?: string;
+  readonly VITE_APP_GPT_IMAGE_MODELS?: string;
+  readonly VITE_APP_GEMINI_ENABLED?: string;
+  readonly VITE_APP_GEMINI_FUNCTION_ARN?: string;
+  readonly VITE_APP_GEMINI_IMAGE_MODELS?: string;
+  readonly VITE_APP_GEMINI_VIDEO_MODELS?: string;
 }
 
 interface ImportMeta {

@@ -10,11 +10,13 @@ import {
   PiPenNib,
   PiTranslate,
   PiImages,
+  PiImagesSquare,
   PiVideoLight,
   PiSpeakerHighBold,
   PiGear,
   PiGlobe,
   PiX,
+  PiFilmSlate,
   PiRobot,
   PiVideoCamera,
   PiFlowArrow,
@@ -37,6 +39,12 @@ import { MODELS } from './hooks/useModel';
 import useScreen from './hooks/useScreen';
 import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
 import useUseCases from './hooks/useUseCases';
+import {
+  IMAGE_STUDIO_PATHNAME,
+  VIDEO_STUDIO_PATHNAME,
+  geminiEnabled,
+  gptImageEnabled,
+} from './utils/mediaModels';
 import { useTranslation } from 'react-i18next';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
@@ -241,6 +249,23 @@ const App: React.FC = () => {
           label: t('navigation.imageGeneration'),
           to: '/image',
           icon: <PiImages />,
+          display: 'usecase' as const,
+        }
+      : null,
+    // GPT Image and Gemini share one page; the model is picked on it
+    gptImageEnabled || geminiEnabled
+      ? {
+          label: t('navigation.imageStudio'),
+          to: IMAGE_STUDIO_PATHNAME,
+          icon: <PiImagesSquare />,
+          display: 'usecase' as const,
+        }
+      : null,
+    geminiEnabled
+      ? {
+          label: t('navigation.geminiVideo'),
+          to: VIDEO_STUDIO_PATHNAME,
+          icon: <PiFilmSlate />,
           display: 'usecase' as const,
         }
       : null,

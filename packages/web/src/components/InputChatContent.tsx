@@ -51,6 +51,19 @@ type Props = {
   modelId?: string;
   onModelChange?: (modelId: string) => void;
   modelOptions?: { value: string; label: string }[];
+  // Extra controls in the input toolbar, before / after the
+  // model selector (e.g. the image settings)
+  toolbarStart?: React.ReactNode;
+  toolbarEnd?: React.ReactNode;
+  // Shown inside the input box above the text (e.g. the images
+  // to edit on the image page, which manages its own attachments)
+  topContent?: React.ReactNode;
+  // Shown inside the input box between the text and the
+  // toolbar (e.g. the generation settings of the image / video pages)
+  bottomContent?: React.ReactNode;
+  // Files pasted into the text box, for pages that manage their
+  // own attachments instead of fileUpload
+  onPasteFiles?: (files: File[]) => void;
 } & (
   | {
       hideReset?: false;
@@ -109,6 +122,11 @@ const InputChatContent: React.FC<Props> = (props) => {
     const files = Array.from(fileList)
       .filter((file) => file.kind === 'file')
       .map((file) => file.getAsFile() as File);
+    if (files.length > 0 && props.onPasteFiles) {
+      props.onPasteFiles(files);
+      pasteEvent.preventDefault();
+      return;
+    }
     if (files.length > 0 && props.fileLimit && props.accept) {
       // Upload the file
       uploadFiles(Array.from(files), props.fileLimit, props.accept);
@@ -163,6 +181,7 @@ const InputChatContent: React.FC<Props> = (props) => {
               : 'mb-7'
         }`}>
         <div className="flex grow flex-col">
+          {props.topContent}
           {props.fileUpload && uploadedFiles.length > 0 && (
             <div className="flex flex-wrap gap-2 p-2">
               {uploadedFiles.map((uploadedFile, idx) => {
@@ -228,10 +247,13 @@ const InputChatContent: React.FC<Props> = (props) => {
             notItem
             value={props.content}
             onChange={props.onChangeContent}
-            onPaste={props.fileUpload ? handlePaste : undefined}
+            onPaste={
+              props.fileUpload || props.onPasteFiles ? handlePaste : undefined
+            }
             onEnter={disabledSend ? undefined : props.onSend}
           />
         </div>
+        {props.bottomContent}
         <div className="m-2 flex justify-between gap-1">
           {/* min-w-0 lets the model selector shrink on narrow screens instead
               of pushing the send button out of the row. */}
@@ -277,6 +299,7 @@ const InputChatContent: React.FC<Props> = (props) => {
                 />
               </Tooltip>
             )}
+            {props.toolbarStart}
             {props.modelId && props.onModelChange && props.modelOptions && (
               // A native select is as wide as its longest option. The hidden
               // span holds only the selected label, with the same padding,
@@ -309,6 +332,7 @@ const InputChatContent: React.FC<Props> = (props) => {
                 </select>
               </div>
             )}
+            {props.toolbarEnd}
           </div>
           <div className="flex items-center gap-x-2">
             {props.setting && (

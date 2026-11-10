@@ -453,6 +453,46 @@ files:
     videoCountExceeded: 動画数は {{maxCount}} 個以下にしてください。
 flow:
   title: Flow チャット
+geminiVideo:
+  aspectRatio: アスペクト比
+  aspectRatios:
+    landscape: '16:9 (横長)'
+    portrait: '9:16 (縦長)'
+  continueEditing: 直前の動画を続けて編集
+  description: 作りたい動画を説明すると生成します。画像を添付すると参照画像 (最大 {{maxImages}} 枚)、動画 (MP4 / WebM、最大 {{maxVideoMb}}MB) を添付するとその動画の編集になります。結果の「この動画を編集」で続けて直せます。
+  download: ダウンロード
+  duration: 長さ
+  durationHelp: ここで選んだ長さが、プロンプトに書いた秒数より優先されます。長いほど生成に時間がかかります。
+  editThisVideo: この動画を編集
+  error:
+    downloadFailed: ダウンロードに失敗しました。再度お試しください
+    fileTooLarge: 画像の合計サイズが大きすぎます (最大 4MB)
+    generationFailed: '動画の生成に失敗しました: {{error}}'
+    tooManyImages: 添付できる画像は最大 {{max}} 枚です
+    unsupportedFileType: サポートされていないファイル形式です (画像は PNG / JPEG / WebP、動画は MP4 / WebM)
+    uploadFailed: 動画のアップロードに失敗しました。再度お試しください
+    videoTooLarge: 動画ファイルが大きすぎます (最大 {{max}}MB)
+  generating: 動画を生成しています。数分かかることがあります
+  generationTimeNote: 動画の生成には数分かかることがあります
+  imageUse: 画像の使い方
+  imageUseHelp: 「自動」ではプロンプトと画像からモデルが判断します。うまく伝わらないときだけ指定してください。
+  imageUses:
+    auto: 自動
+    image_to_video: 最初のフレームにする
+    reference_to_video: 人物や物の参照にする
+  noResults: 生成した動画がここに表示されます
+  placeholder:
+    edit: '変更したい内容を入力してください (例: 空を夕焼けにして。他はそのまま)'
+    generate: 作りたい動画を説明してください (カメラの動きや被写体の動きを具体的に)
+  resolution: 解像度
+  resolutionHelp: 360p は下書き向けで速く、1080p と 4K は 720p からの拡大です (細部が増えるわけではなく、ファイルは大きくなります)。
+  seconds: '{{n}}秒'
+  settings: 動画の設定
+  settingsDone: 閉じる
+  settingsInheritedHelp: 動画の編集では、アスペクト比・長さ・解像度は元の動画のものがそのまま使われます。
+  stopEditing: 続けて編集するのをやめる
+  title: 動画生成・編集
+  viewInHistory: チャット履歴で表示
 generateImage:
   add_color: カラーを追加
   assistant:
@@ -529,6 +569,86 @@ generateText:
   title: 文章生成
 image:
   load_error: '[画像エラー: {{error}}]'
+imageAutoPlan:
+  autoCountHelp: 参照したチャットの内容から、AI が枚数 (最大 {{max}} 枚) と各画像の内容を自動で判断して生成します
+  generatingProgress: '{{current}} / {{total}} 枚目を生成中...'
+  model: 構成を考える AI モデル
+  planning: AI が画像の構成を検討中...
+imageChatContext:
+  defaultPrompt: この会話の内容を、プレゼン資料として使えるスライド画像にまとめてください。伝わりやすさを重視して、適切な枚数に分割してください
+  error:
+    emptyChat: このチャットにはメッセージがありません
+    loadFailed: チャット履歴の読み込みに失敗しました。再度お試しください
+  label: チャット履歴の参照 (任意)
+  loadMore: さらに読み込む
+  messageCount: ({{n}} 件のメッセージ)
+  noChats: チャット履歴がありません
+  remove: 参照を解除
+  select: チャット履歴を選択
+  selectChat: 参照するチャットを選択
+imagePdf:
+  error:
+    exportFailed: PDF の作成に失敗しました。再度お試しください
+  exportAll: PDF に保存
+imageStudio:
+  aspectRatio: アスペクト比
+  auto: 自動
+  background: 背景
+  backgroundHelp: 「透明」はロゴや切り抜き素材向けです。形式は PNG か WebP になります。
+  backgrounds:
+    opaque: 不透明
+    transparent: 透明
+  clearInputImages: 添付した画像をすべて外す
+  compression: 圧縮品質
+  compressionHelp: 数字を下げるとファイルが小さくなり、画質は落ちます。
+  description: 作りたい画像を説明すると生成します。画像を添付する (結果の「この画像を編集」も可) とその画像を編集し、会話を参照するとその内容をまとめた画像を作ります。モデルは下の入力欄で選べます。
+  download: ダウンロード
+  editThisImage: この画像を編集
+  error:
+    downloadFailed: ダウンロードに失敗しました。再度お試しください
+    fileTooLarge: 画像の合計サイズが大きすぎます (最大 4MB)
+    generationFailed: '画像の生成に失敗しました: {{error}}'
+    tooManyImages: 添付できる画像は最大 {{max}} 枚です
+    unsupportedFileType: サポートされていないファイル形式です (PNG / JPEG / WebP のみ)
+  generating: 画像を生成しています
+  gifFrameDuration: 1 コマの長さ
+  gifFrames: コマ数
+  gifHelp: GIF はコマ数 × 1 コマの長さの短いアニメーションになります。動かしたい内容をプロンプトに書いてください。
+  help: 設定は選んだモデルごとに変わります。よく使う設定は入力欄でも直接変えられます。画像のサイズや品質を上げると、PDF にまとめたときのファイルも大きくなります。
+  imageSize: 解像度
+  noResults: 生成した画像がここに表示されます
+  numberOfImages: 生成枚数
+  outputFormat: 形式
+  outputFormatHelp: 写真のような画像は JPEG や WebP にするとファイルが小さくなります。GIF を選ぶとアニメーションを作ります。
+  outputFormats:
+    gif: GIF (アニメーション)
+    jpeg: JPEG
+    png: PNG
+    webp: WebP
+  placeholder:
+    chat: 参照した会話から、どんな画像を作るか入力してください
+    edit: 添付した画像をどう変えるか入力してください
+    generate: 作りたい画像を説明してください
+  qualities:
+    high: 高
+    low: 低
+    max: 最高
+    medium: 中
+    xhigh: 特高
+  quality: 品質
+  seconds: '{{n}}秒'
+  settings: 画像の設定
+  settingsDone: 閉じる
+  size: サイズ
+  thinkingLevel: 考える深さ
+  thinkingLevelHelp: 深くするほど、文字の多い図や複雑な構図が正確になりますが、時間と料金が増えます。
+  thinkingLevels:
+    default: モデルの既定
+    high: 深い
+    medium: 標準
+    minimal: 最小
+  title: 画像生成・編集
+  viewInHistory: チャット履歴で表示
 inputs:
   attachment: 添付ファイル
   model: モデル
@@ -797,8 +917,10 @@ navigation:
   chat: チャット
   diagramGeneration: ダイアグラム生成
   flowChat: Flow チャット
+  geminiVideo: 動画生成・編集
   home: ホーム
   imageGeneration: 画像生成
+  imageStudio: 画像生成・編集
   meetingMinutes: 議事録生成
   promptOptimization: プロンプト最適化
   ragChat: RAG チャット
