@@ -171,11 +171,25 @@ const useAgentCoreApi = (id: string) => {
           ...(req.codeExecutionEnabled !== undefined && {
             code_execution_enabled: req.codeExecutionEnabled,
           }),
+          // The invoking user's Google token (Google Workspace MCP)
+          ...(req.googleAccessToken && {
+            google_access_token: req.googleAccessToken,
+          }),
         };
 
         console.log(
           'AgentCoreRequest payload:',
-          JSON.stringify(agentCoreRequest, null, 2)
+          JSON.stringify(
+            {
+              ...agentCoreRequest,
+              // Never print the Google token
+              ...(agentCoreRequest.google_access_token && {
+                google_access_token: '[redacted]',
+              }),
+            },
+            null,
+            2
+          )
         );
 
         const commandInput: InvokeAgentRuntimeCommandInput = {

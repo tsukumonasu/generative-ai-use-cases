@@ -205,6 +205,12 @@ const MCPServerManager: React.FC<MCPServerManagerProps> = ({
                               <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
                                 {server.category}
                               </span>
+                              {/* Runs with the user's own Google account */}
+                              {server.requiresGoogleAuth && (
+                                <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-xs text-yellow-800">
+                                  {t('google_workspace.requires_link')}
+                                </span>
+                              )}
                             </div>
                             <div className="text-sm text-gray-600">
                               {server.description}

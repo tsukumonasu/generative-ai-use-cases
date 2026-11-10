@@ -18,6 +18,7 @@ import {
   PiVideoCamera,
   PiTreeStructure,
   PiMagnifyingGlass,
+  PiGoogleLogo,
 } from 'react-icons/pi';
 
 /**
@@ -32,6 +33,7 @@ const useCaseIconMap: Record<string, React.ReactNode> = {
   '/mcp': <PiGraph />,
   '/agent-core': <PiRobot />,
   '/agent-builder': <PiRobot />,
+  '/workspace-assistant': <PiGoogleLogo />,
   '/research': <PiMagnifyingGlass />,
   '/flow-chat': <PiFlowArrow />,
   '/voice-chat': <PiMicrophoneBold />,

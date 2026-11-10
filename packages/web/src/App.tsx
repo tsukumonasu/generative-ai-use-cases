@@ -24,6 +24,7 @@ import {
   PiNotebook,
   PiGraph,
   PiMagnifyingGlass,
+  PiGoogleLogo,
 } from 'react-icons/pi';
 import { Outlet } from 'react-router-dom';
 import Drawer, { ItemProps } from './components/Drawer';
@@ -37,6 +38,10 @@ import { MODELS } from './hooks/useModel';
 import useScreen from './hooks/useScreen';
 import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
 import useUseCases from './hooks/useUseCases';
+import {
+  workspaceAssistantEnabled,
+  WORKSPACE_ASSISTANT_PATHNAME,
+} from './hooks/useWorkspaceAssistant';
 import { useTranslation } from 'react-i18next';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
@@ -233,6 +238,15 @@ const App: React.FC = () => {
           label: t('navigation.webContentExtraction'),
           to: '/web-content',
           icon: <PiGlobe />,
+          display: 'usecase' as const,
+        }
+      : null,
+    // Google Workspace assistant (fixed Agent Builder agent)
+    workspaceAssistantEnabled
+      ? {
+          label: t('workspace_assistant.title'),
+          to: WORKSPACE_ASSISTANT_PATHNAME,
+          icon: <PiGoogleLogo />,
           display: 'usecase' as const,
         }
       : null,

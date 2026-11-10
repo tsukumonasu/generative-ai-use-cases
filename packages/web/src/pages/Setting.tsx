@@ -21,6 +21,10 @@ import {
 import useChatList from '../hooks/useChatList';
 import useTranscribeLanguageLabels from '../hooks/useTranscribeLanguageLabels';
 import DialogConfirmDeleteAllChats from '../components/DialogConfirmDeleteAllChats';
+import useGoogleWorkspace, {
+  GOOGLE_ACCOUNT_CONNECTIONS_URL,
+} from '../hooks/useGoogleWorkspace';
+import useIntegrationLink from '../hooks/useIntegrationLink';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
 const ragKnowledgeBaseEnabled: boolean =
@@ -64,6 +68,11 @@ const Setting = () => {
   const { i18n, t } = useTranslation();
   const { deleteAllChats } = useChatList();
   const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
+  // Google Workspace MCP account linking. Same flow as the pages that use it:
+  // the consent comes back to this page.
+  const googleWorkspace = useGoogleWorkspace();
+  const { linking: googleLinking, startLink: onClickLinkGoogle } =
+    useIntegrationLink('google_workspace', googleWorkspace);
 
   const localVersion = getLocalVersion();
   const hasUpdate = getHasUpdate();
@@ -232,6 +241,49 @@ const Setting = () => {
               onSwitch={setSettingShowEmail}
             />
           }></SettingItem>
+
+        {googleWorkspace.enabled && googleWorkspace.statusError && (
+          <SettingItem
+            name={t('google_workspace.setting_name')}
+            value={
+              <span className="text-red-500">
+                {t('google_workspace.status_error')}
+              </span>
+            }></SettingItem>
+        )}
+
+        {googleWorkspace.enabled && googleWorkspace.allowed && (
+          <SettingItem
+            name={t('google_workspace.setting_name')}
+            helpMessage={t('google_workspace.setting_help')}
+            value={
+              <div className="flex items-center gap-3">
+                <span>
+                  {googleWorkspace.linked
+                    ? t('google_workspace.status_linked')
+                    : t('google_workspace.status_not_linked')}
+                </span>
+                {googleWorkspace.linked && (
+                  <a
+                    href={GOOGLE_ACCOUNT_CONNECTIONS_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center hover:underline">
+                    {t('google_workspace.unlink')}
+                    <PiArrowSquareOut className="text-base" />
+                  </a>
+                )}
+                <Button
+                  onClick={() => onClickLinkGoogle()}
+                  loading={googleLinking}
+                  disabled={googleLinking || googleWorkspace.isLoading}>
+                  {googleWorkspace.linked
+                    ? t('google_workspace.relink')
+                    : t('google_workspace.link')}
+                </Button>
+              </div>
+            }></SettingItem>
+        )}
 
         <SettingItem
           name={t('setting.items.delete_all_chats')}

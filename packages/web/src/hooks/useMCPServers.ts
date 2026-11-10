@@ -28,6 +28,9 @@ export const loadMCPServersFromEnv = (): AvailableMCPServer[] => {
         name: serverName,
         description: metadata.description || `MCP server: ${serverName}`,
         category: metadata.category || 'Other',
+        // Google Workspace MCP servers use the user's Google token
+        requiresGoogleAuth:
+          parsedConfig[serverName]?.requiresGoogleAuth === true,
       };
     });
   } catch (error) {

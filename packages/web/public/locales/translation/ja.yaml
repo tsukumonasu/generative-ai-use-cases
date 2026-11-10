@@ -60,7 +60,15 @@ agent_builder:
   failed_to_toggle_favorite: お気に入りの切り替えに失敗しました
   failed_to_update_agent: エージェントの更新に失敗しました
   favorites: お気に入り
+  file_preview:
+    close: 閉じる
+    download: ダウンロード
+    next: 次のページ
+    page: '{{page}} / {{total}} ページ'
+    previous: 前のページ
+    truncated: 先頭 {{count}} ページのプレビューです
   filter_by_tag: タグでフィルター
+  follow_up_actions_hint: この回答をファイルにする
   generate_short: 生成
   generate_with_ai: AIにより生成する
   generating_prompt: システムプロンプトを生成中...
@@ -91,6 +99,7 @@ agent_builder:
   public: 公開エージェント
   public_sharing_description: >-
     このエージェントを公開し、他のユーザーが発見して利用できるようにします。エージェントはすべてのユーザーに表示されますが、オリジナルを変更することはできません。
+  quick_actions_hint: ボタンを押すと、入力しなくてもすぐに実行します
   quick_examples: クイック例
   quick_examples_title: クイック例
   search_agents: エージェントを検索...
@@ -527,6 +536,24 @@ generateText:
   result_placeholder: 生成された文章がここに表示されます
   source_info: 文章の元になる情報
   title: 文章生成
+google_workspace:
+  agent_not_allowed: このエージェントは Google Workspace を使いますが、あなたのアカウントでは Google 連携が許可されていません。Google のツールなしで動作します。
+  agent_not_linked: このエージェントはあなたの Google アカウントで Google Workspace を使います。Google と連携するまでは、Google のツールなしで動作します。
+  callback_completing: Google との連携を完了しています...
+  callback_failed: Google との連携を完了できませんでした。もう一度お試しください。
+  callback_linked: Google と連携しました。Google Workspace を使うエージェントで利用できます。
+  callback_title: Google と連携
+  link: Google と連携
+  link_failed: Google との連携を開始できませんでした。
+  relink: 再連携
+  requires_link: 要 Google 連携
+  setting_help: Google Workspace MCP と Agent Builder のエージェントが、あなたの Google アカウントの権限で Google Workspace を使えるようにします（Gmail・カレンダー・ドライブ・ドキュメント・スプレッドシート・スライド・チャット・ディレクトリの読み取りと、メールの下書き・予定の追加・ファイルの作成・ドキュメントなどの編集）。メールの送信やファイルの削除・共有はしません。
+  setting_name: Google Workspace 連携
+  status_error: 連携状態を取得できませんでした。管理者に連絡してください。
+  status_linked: 連携済み
+  status_not_linked: 未連携
+  unlink: 連携を解除
+
 image:
   load_error: '[画像エラー: {{error}}]'
 inputs:
@@ -534,6 +561,11 @@ inputs:
   model: モデル
   reasoning: 深く考える
   setting: 設定
+integration:
+  back: 元のページに戻る
+  checking: 連携状態を確認しています...
+  retry: もう一度連携する
+
 landing:
   alert:
     description: >-
@@ -1304,6 +1336,63 @@ webcontent:
   result_placeholder: 抽出された文章がここに表示されます
   title: Web コンテンツ抽出
   website_to_extract: コンテンツを抽出したい Web サイト
+workspace_assistant:
+  description: Gmail・カレンダー・ドライブ・チャットなど、あなたの Google Workspace の情報を調べて答えます。PowerPoint・Excel・Word・PDF の作成、メールの下書き、予定の追加、ドキュメント・スプレッドシート・スライドの編集もできます。
+  export_actions:
+    excel:
+      label: Excel
+      prompt: 直前の回答の内容を Excel ファイルにしてください。
+    google_docs:
+      label: Google ドキュメント
+      prompt: 直前の回答の内容を Google ドキュメントにして、ドライブに保存してください。
+    pdf:
+      label: PDF
+      prompt: 直前の回答の内容を PDF にしてください。
+    powerpoint:
+      label: PowerPoint
+      prompt: 直前の回答の内容を PowerPoint のスライドにしてください。
+    word:
+      label: Word
+      prompt: 直前の回答の内容を Word ファイルにしてください。
+  quick_actions:
+    agenda_doc:
+      label: 会議のアジェンダ
+      prompt: 次の会議について、目的・参加者・議題・関連する資料 (リンク)・事前に確認しておく点をまとめた Word のアジェンダを作ってください。
+    briefing:
+      label: 今日のブリーフィング
+      prompt: 今日の仕事の準備をしたいです。今日の予定、直近 24 時間に届いた未読メール、Google Chat の最近のメッセージを確認して、今日対応すべきことを優先度の高い順にまとめてください。
+    chat_updates:
+      label: Chat の新着
+      prompt: 直近 3 日間の Google Chat で、自分あてのメッセージや自分が参加している会話の動きを要約し、返事が必要なものを教えてください。
+    free_time:
+      label: 今週の空き時間
+      prompt: 今週の残りの平日 (9:00〜18:00) で、30 分以上空いている時間帯を日ごとに一覧にしてください。
+    next_meeting:
+      label: 次の会議の準備
+      prompt: これから始まる次の会議について、議題や参加者を確認し、関係するメール・Drive の資料・Chat のやり取りを探して、事前に把握しておくべき点をまとめてください。
+    recent_files:
+      label: 最近のファイル
+      prompt: 最近更新・閲覧した Drive のファイルを 10 件ほど一覧にして、それぞれ何の資料かを一言で説明してください。
+    reply_drafts:
+      label: 返信の下書き
+      prompt: 直近 3 日間の未読メールから返信が必要なものを最大 3 件選び、それぞれ Gmail に返信の下書きを作ってください (送信はしません)。作った下書きの宛先と本文も見せてください。
+    schedule_excel:
+      label: 予定を Excel に
+      prompt: 今週 (月〜金) の予定を Excel ファイルにまとめてください。列は日付・開始・終了・件名・場所・参加者数とし、所要時間は数式で計算して、合計行も付けてください。
+    today_schedule:
+      label: 今日の予定
+      prompt: 今日の予定を時間順に一覧にしてください。それぞれの時間・場所 (会議の URL)・主な参加者を添えて、準備が必要そうな予定があれば教えてください。
+    unread_mail:
+      label: 未読メールの要約
+      prompt: 直近 3 日間の未読メールを確認して、返信や対応が必要なものと、目を通すだけでよいものに分けて要約してください。
+    weekly_report:
+      label: 週報の下書き
+      prompt: 今週の予定、送受信したメール、更新した Drive のファイルをもとに、今週やったことと来週の予定を週報の下書きとしてまとめてください。
+    weekly_slides:
+      label: 週報をスライドに
+      prompt: 今週の予定、送受信したメール、更新した Drive のファイルをもとに、今週の活動報告を 6〜8 枚の PowerPoint にまとめてください。PDF も作ってください。
+  title: Google Workspace MCP
+
 writer:
   ai:
     ask_ai: AI に質問

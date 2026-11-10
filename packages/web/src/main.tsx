@@ -49,6 +49,17 @@ import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
 import GenerateDiagramPage from './pages/GenerateDiagramPage.tsx';
 import WriterPage from './pages/WriterPage.tsx';
 import useUseCases from './hooks/useUseCases';
+// Google Workspace MCP account linking
+import {
+  googleWorkspaceEnabled,
+  GOOGLE_WORKSPACE_CALLBACK_PATHNAME,
+} from './hooks/useGoogleWorkspace';
+import GoogleWorkspaceCallbackPage from './pages/GoogleWorkspaceCallbackPage';
+import {
+  workspaceAssistantEnabled,
+  WORKSPACE_ASSISTANT_PATHNAME,
+} from './hooks/useWorkspaceAssistant';
+import WorkspaceAssistantPage from './pages/WorkspaceAssistantPage';
 import { Toaster } from 'sonner';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
@@ -251,6 +262,20 @@ const routes: RouteObject[] = [
     ? {
         path: '/agent-builder/:agentId',
         element: <AgentBuilderChatPage />,
+      }
+    : null,
+  // Google Workspace MCP (return page after Google consent)
+  googleWorkspaceEnabled
+    ? {
+        path: GOOGLE_WORKSPACE_CALLBACK_PATHNAME,
+        element: <GoogleWorkspaceCallbackPage />,
+      }
+    : null,
+  // Google Workspace assistant (fixed Agent Builder agent)
+  workspaceAssistantEnabled
+    ? {
+        path: WORKSPACE_ASSISTANT_PATHNAME,
+        element: <WorkspaceAssistantPage />,
       }
     : null,
   {

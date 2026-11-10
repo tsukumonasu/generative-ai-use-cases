@@ -60,7 +60,15 @@ agent_builder:
   failed_to_toggle_favorite: Failed to toggle favorite
   failed_to_update_agent: Failed to update agent
   favorites: Favorites
+  file_preview:
+    close: Close
+    download: Download
+    next: Next page
+    page: 'Page {{page}} of {{total}}'
+    previous: Previous page
+    truncated: Showing the first {{count}} pages
   filter_by_tag: Filter by tag
+  follow_up_actions_hint: 'Turn this answer into a file:'
   generate_short: Generate
   generate_with_ai: Generate with AI
   generating_prompt: Generating system prompt...
@@ -96,6 +104,7 @@ agent_builder:
     available to others. 
 
     The agent is visible to all users, but you cannot modify the original.
+  quick_actions_hint: Click a button to run it right away, no typing needed
   quick_examples: Quick Examples
   quick_examples_title: Quick Examples
   search_agents: Search agents...
@@ -626,6 +635,29 @@ generateText:
   result_placeholder: Generated text will be displayed here
   source_info: Source information for text
   title: Text Generation
+google_workspace:
+  agent_not_allowed: This agent uses Google Workspace, but your account is not allowed to link Google. It runs without the Google tools.
+  agent_not_linked: This agent uses Google Workspace with your own Google account. It runs without the Google tools until you link Google.
+  callback_completing: Finishing linking with Google...
+  callback_failed: Could not finish linking with Google. Please try again.
+  callback_linked: Your Google account is linked. Agents that use Google Workspace can now use it.
+  callback_title: Link Google
+  link: Link Google
+  link_failed: Could not start linking with Google.
+  relink: Link again
+  requires_link: Needs Google link
+  setting_help: >-
+    Lets the Google Workspace Assistant and Agent Builder agents use your Google
+    Workspace with the permissions of your own Google account: read Gmail,
+    Calendar, Drive, Docs, Sheets, Slides, Chat and the directory, create email
+    drafts, add events, create files and edit Docs, Sheets and Slides. They never
+    send email or delete or share files.
+  setting_name: Google Workspace
+  status_error: Could not get the link status. Contact your administrator.
+  status_linked: Linked
+  status_not_linked: Not linked
+  unlink: Unlink
+
 image:
   load_error: '[Image error: {{error}}]'
 inputs:
@@ -633,6 +665,11 @@ inputs:
   model: Model
   reasoning: Extended thinking
   setting: Setting
+integration:
+  back: Back to the page
+  checking: Checking the link status...
+  retry: Link again
+
 landing:
   alert:
     description: >-
@@ -1575,6 +1612,100 @@ webcontent:
   result_placeholder: Extracted text will be displayed here
   title: Web Content Extraction
   website_to_extract: Website to extract content from
+workspace_assistant:
+  description: >-
+    Looks things up in your own Google Workspace (Gmail, Calendar, Drive, Chat
+    and more), creates PowerPoint, Excel, Word and PDF files, drafts emails,
+    adds events and edits Docs, Sheets and Slides.
+  export_actions:
+    excel:
+      label: Excel
+      prompt: Turn the content of your previous answer into an Excel file.
+    google_docs:
+      label: Google Docs
+      prompt: >-
+        Turn the content of your previous answer into a Google Docs document and
+        save it to my Drive.
+    pdf:
+      label: PDF
+      prompt: Turn the content of your previous answer into a PDF.
+    powerpoint:
+      label: PowerPoint
+      prompt: Turn the content of your previous answer into PowerPoint slides.
+    word:
+      label: Word
+      prompt: Turn the content of your previous answer into a Word file.
+  quick_actions:
+    agenda_doc:
+      label: Meeting agenda
+      prompt: >-
+        For my next meeting, create a Word agenda with the purpose, attendees,
+        topics, related materials (links) and what to check beforehand.
+    briefing:
+      label: Today's briefing
+      prompt: >-
+        Help me get ready for today. Check today's schedule, the unread emails
+        from the last 24 hours and recent Google Chat messages, and list what I
+        need to handle today, most important first.
+    chat_updates:
+      label: Chat updates
+      prompt: >-
+        Summarize the last 3 days of Google Chat: messages to me and activity in
+        conversations I am part of. Tell me which ones need a reply.
+    free_time:
+      label: Free time this week
+      prompt: >-
+        List, day by day, the free slots of 30 minutes or more during the rest of
+        this week's working days (9:00-18:00).
+    next_meeting:
+      label: Prepare for next meeting
+      prompt: >-
+        For my next upcoming meeting, check the agenda and attendees, find
+        related emails, Drive files and Chat conversations, and summarize what I
+        should know beforehand.
+    recent_files:
+      label: Recent files
+      prompt: >-
+        List about 10 Drive files I recently edited or opened, with a one-line
+        description of what each one is.
+    reply_drafts:
+      label: Reply drafts
+      prompt: >-
+        From the unread emails of the last 3 days, pick up to 3 that need a reply
+        and create a reply draft in Gmail for each (do not send them). Show me
+        the recipients and text of the drafts.
+    schedule_excel:
+      label: Schedule to Excel
+      prompt: >-
+        Put this week's events (Monday to Friday) into an Excel file with the
+        date, start, end, title, place and number of attendees. Calculate the
+        duration with formulas and add a totals row.
+    today_schedule:
+      label: Today's schedule
+      prompt: >-
+        List today's events in time order with the time, place (or meeting URL)
+        and main attendees, and point out any that look like they need
+        preparation.
+    unread_mail:
+      label: Summarize unread mail
+      prompt: >-
+        Check the unread emails from the last 3 days and summarize them, split
+        into ones that need a reply or action and ones that are just for
+        reading.
+    weekly_report:
+      label: Draft weekly report
+      prompt: >-
+        Based on this week's events, the emails I sent and received, and the
+        Drive files I updated, draft a weekly report of what I did this week and
+        what is planned for next week.
+    weekly_slides:
+      label: Weekly report slides
+      prompt: >-
+        Based on this week's events, the emails I sent and received and the Drive
+        files I updated, make a 6-8 slide PowerPoint report of this week's work.
+        Also make a PDF.
+  title: Google Workspace MCP
+
 writer:
   ai:
     ask_ai: Ask AI

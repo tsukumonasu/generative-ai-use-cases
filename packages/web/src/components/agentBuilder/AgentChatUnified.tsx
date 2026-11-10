@@ -19,6 +19,19 @@ import {
 import ButtonIcon from '../ButtonIcon';
 import Select from '../Select';
 import useDropOverlay from '../../hooks/useDropOverlay';
+// Optional extensions for fixed assistants (quick actions, follow-up buttons,
+// file previews, the user's own Google token)
+import AgentQuickActions from './AgentQuickActions';
+import AgentAnswerExtras from './AgentAnswerExtras';
+import AgentIntegrationNotices from './AgentIntegrationNotices';
+import useAgentIntegrationTokens from '../../hooks/useAgentIntegrationTokens';
+import {
+  AgentChatExtensionProps,
+  fullscreenEmptyStateHeight,
+  useInputModelProps,
+  useQuickSend,
+} from '../../hooks/useAgentChatExtensions';
+export type { AgentQuickAction } from '../../hooks/useAgentChatExtensions';
 
 // Define file limits for the chat interface
 // File size limits for AgentCore (AgentCore Runtime route: Frontend → AgentCore Runtime → Bedrock Converse API)
@@ -52,7 +65,7 @@ const fileLimit: FileLimit = {
   maxVideoFileSizeMB: 0,
 };
 
-interface AgentChatProps {
+interface AgentChatProps extends AgentChatExtensionProps {
   agent: AgentConfiguration;
   sessionId?: string;
   className?: string;
@@ -78,6 +91,7 @@ const AgentChatUnified: React.FC<AgentChatProps> = ({
   onEdit,
   onBack,
   actions,
+  ...extensionProps
 }) => {
   const { t } = useTranslation();
 
@@ -105,6 +119,17 @@ const AgentChatUnified: React.FC<AgentChatProps> = ({
   // Get models from MODELS
   const { modelIds: availableModels, modelDisplayName } = MODELS;
   const modelId = getModelId();
+
+  // The model selector of the input toolbar, the user's own Google token,
+  // and the quick actions' prompt
+  const inputModelProps = useInputModelProps(
+    extensionProps,
+    modelId,
+    setModelId
+  );
+  const integrations = useAgentIntegrationTokens(agent?.mcpServers);
+  const { getAccessTokens } = integrations;
+  const quickSend = useQuickSend();
 
   // File handling
   const { clear: clearFiles, uploadFiles, uploadedFiles } = useFiles(pathname);
@@ -172,7 +197,9 @@ Please respond as this agent with the specified behavior and personality.`;
   }, [accept]);
 
   const handleSendMessage = useCallback(async () => {
-    if (!chatContent.trim() || chatLoading) return;
+    const quickPrompt = quickSend.takePrompt();
+    const content = quickPrompt ?? chatContent;
+    if (!content.trim() || chatLoading || !quickSend.begin()) return;
 
     if (layout === 'fullscreen') {
       setFollowing(true);
@@ -198,27 +225,34 @@ Please respond as this agent with the specified behavior and personality.`;
           ? uploadedFileObjects.map((uploadedFile) => uploadedFile.file)
           : undefined;
 
+      // Fetched right before each invocation, never stored
+      const accessTokens = await getAccessTokens();
+
       // Use AgentCore's invokeAgentRuntime with MCP servers
       invokeAgentRuntime(
         agentBuilderRuntime.arn,
         sessionId,
-        chatContent,
+        content,
         'DEFAULT',
         filesToSend,
         'current-user',
         agent.mcpServers,
         agent.agentId,
         modelId,
-        agent.codeExecutionEnabled ?? false
+        agent.codeExecutionEnabled ?? false,
+        ...accessTokens
       );
 
-      setChatContent('');
+      // A quick action leaves what the user was typing in the input box
+      if (quickPrompt === null) setChatContent('');
       clearFiles();
     } catch (error) {
       console.error('Error sending message:', error);
       alert(
         `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`
       );
+    } finally {
+      quickSend.end();
     }
   }, [
     chatContent,
@@ -232,6 +266,8 @@ Please respond as this agent with the specified behavior and personality.`;
     sessionId,
     uploadedFiles,
     clearFiles,
+    quickSend,
+    getAccessTokens,
   ]);
 
   const handleResetChat = useCallback(() => {
@@ -289,7 +325,10 @@ Please respond as this agent with the specified behavior and personality.`;
       {showAgentInfo && (
         <div className="flex w-full flex-col items-center gap-3 print:hidden">
           {/* Model Selection */}
-          <div className="w-full max-w-md">
+          <div
+            className={
+              extensionProps.modelSelectorInInput ? 'hidden' : 'w-full max-w-md'
+            }>
             <Select
               value={modelId}
               onChange={setModelId}
@@ -327,6 +366,7 @@ Please respond as this agent with the specified behavior and personality.`;
                 ))}
             </div>
           )}
+          <AgentIntegrationNotices integrations={integrations} />
         </div>
       )}
     </div>
@@ -335,7 +375,7 @@ Please respond as this agent with the specified behavior and personality.`;
   // Render empty state
   const renderEmptyState = () => (
     <div
-      className={`flex ${layout === 'card' ? 'h-full' : 'h-[calc(100vh-13rem)]'} flex-col items-center justify-center ${layout === 'card' ? 'p-8' : ''}`}>
+      className={`flex ${layout === 'card' ? 'h-full' : fullscreenEmptyStateHeight(extensionProps.quickActions)} flex-col items-center justify-center ${layout === 'card' ? 'p-8' : ''}`}>
       {agent ? (
         <>
           <RobotIcon className="h-16 w-16 fill-gray-400 text-gray-400" />
@@ -347,6 +387,12 @@ Please respond as this agent with the specified behavior and personality.`;
               {agent.description}
             </p>
           )}
+          <AgentQuickActions
+            {...extensionProps}
+            quickSend={quickSend}
+            disabled={chatLoading}
+            onSend={handleSendMessage}
+          />
         </>
       ) : (
         <>
@@ -390,6 +436,14 @@ Please respond as this agent with the specified behavior and personality.`;
               idx={idx}
               chatContent={message}
               loading={chatLoading && idx === chatMessages.length - 1}
+            />
+            <AgentAnswerExtras
+              {...extensionProps}
+              messages={chatMessages}
+              idx={idx}
+              loading={chatLoading}
+              quickSend={quickSend}
+              onSend={handleSendMessage}
             />
             <div
               className={`w-full border-b border-gray-300 ${layout === 'card' ? 'mt-4' : ''}`}></div>
@@ -440,6 +494,7 @@ Please respond as this agent with the specified behavior and personality.`;
               fileLimit={fileLimit}
               accept={accept}
               fullWidth={true}
+              {...inputModelProps}
             />
           </div>
         </div>
@@ -482,6 +537,7 @@ Please respond as this agent with the specified behavior and personality.`;
           fileUpload={fileUpload}
           fileLimit={fileLimit}
           accept={accept}
+          {...inputModelProps}
         />
       </div>
     </div>
