@@ -665,6 +665,20 @@ const envs: Record<string, Partial<StackInput>> = {
 
 詳細な手順については、[リサーチエージェントデプロイガイド](./DEPLOY_RESEARCH_USECASE.md)を参照してください。
 
+### Web 検索チャットユースケースの有効化
+
+Web 検索チャットは、選択したモデルに `web_search` ツールを渡し、モデルが必要と判断したときに Web を検索して、出典付きで回答するチャットです。検索は Amazon Nova の web grounding で行い、オプションで Amazon Bedrock Web Search (GPT) も選べます。既定では無効で、`webGroundingEnabled` を `true` にした場合のみ Lambda 関数とメニューが作成されます。
+
+```json
+{
+  "context": {
+    "webGroundingEnabled": true
+  }
+}
+```
+
+GPT エンジンを使う場合は、`webGroundingGptModelId` も設定します。検索に使うモデルは US リージョン / US CRIS プロファイルのものに限られます。全パラメータと制約は [Web 検索チャット](./WEB_SEARCH.md) を参照してください。
+
 ### MCP チャットユースケースの有効化
 
 > [!WARNING]

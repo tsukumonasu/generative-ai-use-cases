@@ -646,6 +646,20 @@ const envs: Record<string, Partial<StackInput>> = {
 
 For detailed instructions, see the [Research Agent Deployment Guide](./DEPLOY_RESEARCH_USECASE.md).
 
+### Enabling Web Search Chat Use Case
+
+Web Search Chat gives the selected model a `web_search` tool: the model searches the web when it decides it needs to, and answers with citations. Searches run on Amazon Nova web grounding, and optionally on Amazon Bedrock Web Search (GPT). It is disabled by default; the Lambda function and the menu item are created only when `webGroundingEnabled` is `true`.
+
+```json
+{
+  "context": {
+    "webGroundingEnabled": true
+  }
+}
+```
+
+To also use the GPT engine, set `webGroundingGptModelId`. The search models must be in a US region / US CRIS profile. For all parameters and limitations, please refer to [Web Search Chat](./WEB_SEARCH.md).
+
 ### Enabling MCP Chat Use Case
 
 > [!WARNING]
