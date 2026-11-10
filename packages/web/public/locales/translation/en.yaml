@@ -180,6 +180,8 @@ chat:
   system_prompt: System Prompt
   title: Chat
   view_prompt_examples: View Prompt Examples
+  web_search_calls: '×{{calls}}'
+  web_search_usage: Model used for web search (searches, input tokens, output tokens)
 common:
   add: Add
   arrow: →
@@ -1575,6 +1577,18 @@ webcontent:
   result_placeholder: Extracted text will be displayed here
   title: Web Content Extraction
   website_to_extract: Website to extract content from
+websearch:
+  description: >-
+    The selected model searches the web when it needs to, then analyzes the
+    results to answer. The pages it used are cited in the answer.
+  engine_gpt: 'Search: GPT (Bedrock Web Search)'
+  engine_help: >-
+    Which engine runs the web searches the selected model asks for. GPT uses
+    Amazon Bedrock Web Search, which can search again and fetch page content on
+    its own, so it may take longer than Nova. Applies from the next message.
+  engine_label: Search engine
+  engine_nova: 'Search: Amazon Nova'
+  title: Web Search Chat
 writer:
   ai:
     ask_ai: Ask AI

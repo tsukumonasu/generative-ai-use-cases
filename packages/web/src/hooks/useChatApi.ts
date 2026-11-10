@@ -26,6 +26,11 @@ import {
 } from '@aws-sdk/client-lambda';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
 import useHttp from '../hooks/useHttp';
+import {
+  getWebSearchEngine,
+  isWebSearchId,
+  webGroundingEnabled,
+} from './useWebGrounding';
 import { decomposeId } from '../utils/ChatUtils';
 import { AxiosResponse } from 'axios';
 import { fetchAuthSession } from 'aws-amplify/auth';
@@ -150,6 +155,14 @@ const useChatApi = () => {
       // Append idToken to req
       req.idToken = token;
 
+      // The web search chat is streamed by its own Lambda, which lets the
+      // selected model call web search as a tool. The search
+      // engine picked on the page travels with every request.
+      const isWebSearch = webGroundingEnabled && isWebSearchId(req.id);
+      if (isWebSearch) {
+        req.webSearchEngine = getWebSearchEngine();
+      }
+
       const payload = JSON.stringify(req);
 
       // Lambda request payload limit is 6MB (6,291,456 bytes)
@@ -163,9 +176,13 @@ const useChatApi = () => {
         throw error;
       }
 
+      const functionArn = isWebSearch
+        ? import.meta.env.VITE_APP_WEB_GROUNDING_STREAM_FUNCTION_ARN
+        : import.meta.env.VITE_APP_PREDICT_STREAM_FUNCTION_ARN;
+
       const res = await lambda.send(
         new InvokeWithResponseStreamCommand({
-          FunctionName: import.meta.env.VITE_APP_PREDICT_STREAM_FUNCTION_ARN,
+          FunctionName: functionArn,
           Payload: payload,
         })
       );

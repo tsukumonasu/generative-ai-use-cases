@@ -18,6 +18,7 @@ import {
   ListChatsResponse,
   AdditionalModelRequestFields,
   Metadata,
+  WebSearchUsage,
 } from 'generative-ai-use-cases';
 import { useEffect, useMemo } from 'react';
 import { v4 as uuid } from 'uuid';
@@ -29,6 +30,29 @@ import { findModelByModelId } from './useModel';
 import useFileApi from './useFileApi';
 
 type GenerationMode = 'normal' | 'continue' | 'retry' | 'edit';
+
+// The web search chat streams one metadata chunk per search, so
+// the search engine's tokens are summed per model like usage is
+const mergeWebSearchUsage = (
+  ...lists: (WebSearchUsage[] | undefined)[]
+): WebSearchUsage[] | undefined => {
+  const byModel = new Map<string, WebSearchUsage>();
+  for (const usage of lists.flatMap((list) => list ?? [])) {
+    const sum = byModel.get(usage.modelId);
+    byModel.set(
+      usage.modelId,
+      sum
+        ? {
+            modelId: usage.modelId,
+            calls: sum.calls + usage.calls,
+            inputTokens: sum.inputTokens + usage.inputTokens,
+            outputTokens: sum.outputTokens + usage.outputTokens,
+          }
+        : { ...usage }
+    );
+  }
+  return byModel.size > 0 ? [...byModel.values()] : undefined;
+};
 
 const useChatState = create<{
   chats: {
@@ -430,6 +454,13 @@ const useChatState = create<{
           metadata.usage.cacheWriteInputTokens =
             (metadata.usage.cacheWriteInputTokens || 0) +
             (oldAssistantMessage.metadata.usage.cacheWriteInputTokens || 0);
+          const webSearchUsage = mergeWebSearchUsage(
+            oldAssistantMessage.metadata.webSearchUsage,
+            metadata.webSearchUsage
+          );
+          if (webSearchUsage) {
+            metadata.webSearchUsage = webSearchUsage;
+          }
         }
 
         const newAssistantMessage: ShownMessage = {

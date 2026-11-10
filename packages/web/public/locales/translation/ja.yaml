@@ -169,6 +169,8 @@ chat:
   system_prompt: システムプロンプト
   title: チャット
   view_prompt_examples: プロンプト例を見る
+  web_search_calls: '{{calls}} 回'
+  web_search_usage: Web 検索に使ったモデル (検索回数・入力トークン・出力トークン)
 common:
   add: 追加
   arrow: →
@@ -1304,6 +1306,13 @@ webcontent:
   result_placeholder: 抽出された文章がここに表示されます
   title: Web コンテンツ抽出
   website_to_extract: コンテンツを抽出したい Web サイト
+websearch:
+  description: 選択したモデルが必要に応じて Web 検索を呼び出し、その結果を分析して回答します。参照した Web ページは回答内に引用されます。
+  engine_gpt: '検索: GPT (Bedrock Web Search)'
+  engine_help: 選択したモデルが呼び出す Web 検索を、どのエンジンで実行するかを選びます。GPT は Amazon Bedrock の Web 検索を使い、検索のやり直しやページ本文の取得まで自分で行うため、Nova より時間がかかることがあります。次のメッセージから反映されます。
+  engine_label: 検索エンジン
+  engine_nova: '検索: Amazon Nova'
+  title: Web 検索チャット
 writer:
   ai:
     ask_ai: AI に質問

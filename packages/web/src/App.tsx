@@ -14,6 +14,7 @@ import {
   PiSpeakerHighBold,
   PiGear,
   PiGlobe,
+  PiGlobeHemisphereWest,
   PiX,
   PiRobot,
   PiVideoCamera,
@@ -37,6 +38,10 @@ import { MODELS } from './hooks/useModel';
 import useScreen from './hooks/useScreen';
 import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
 import useUseCases from './hooks/useUseCases';
+import {
+  webGroundingEnabled,
+  WEB_SEARCH_PATHNAME,
+} from './hooks/useWebGrounding';
 import { useTranslation } from 'react-i18next';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
@@ -99,6 +104,14 @@ const App: React.FC = () => {
       icon: <PiChatsCircle />,
       display: 'usecase' as const,
     },
+    webGroundingEnabled
+      ? {
+          label: t('websearch.title'),
+          to: WEB_SEARCH_PATHNAME,
+          icon: <PiGlobeHemisphereWest />,
+          display: 'usecase' as const,
+        }
+      : null,
     ragEnabled
       ? {
           label: t('navigation.ragChat'),

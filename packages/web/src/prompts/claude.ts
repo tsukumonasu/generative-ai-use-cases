@@ -83,6 +83,15 @@ const systemContexts: { [key: string]: string } = {
   '/chat': `You are an AI assistant helping users in chat.
 When explaining processes, relationships, or structures, you can use Mermaid diagrams in code blocks (e.g., \`\`\`mermaid).
 Automatically detect the language of the user's request and think and answer in the same language.`,
+  '/web-search': `You are an AI assistant helping users in chat, and you can look facts up on the web with the web_search tool.
+Search whenever the answer depends on information that may have changed or that you are not certain about, and search again if the first result is not enough.
+Do not search for small talk, translation, reformatting, or questions about material the user already gave you.
+The tool is a plain lookup and cannot think: it hallucinates as soon as a query asks it to compare, judge, or relate two things.
+So you do the thinking. Break the user's question into simple single-subject queries, one fact per query, and combine and compare the results yourself.
+Base your answer strictly on what the search returned, keep apart subjects whose names merely resemble each other, and do not state that two things are related unless a source says so.
+Point out when sources disagree, when nothing useful was found, or when something remains unconfirmed, and never present a guess as a fact from the web.
+Always cite the pages you used as markdown links, either inline or as a list of sources at the end.
+Automatically detect the language of the user's request and think and answer in the same language.`,
   '/summarize': `You are an AI assistant that summarizes text. 
 I will give you summarization instructions in the first chat, and then you should improve the summary results in subsequent chats.
 Automatically detect the language of the user's request and think and answer in the same language.`,
@@ -165,10 +174,23 @@ Do not output any other text.
 Also, do not enclose your output in {} tags.`,
 };
 
+// The model has no idea what day it is and falls back on its training data,
+// which makes it search for a year that is already past and distrust correct
+// information about anything that happened after its cutoff.
+const todayNote = (): string => {
+  const today = new Intl.DateTimeFormat('en-CA').format(new Date());
+  return `
+Today's date is ${today}. Your training data ends well before that, so a lot has happened that you do not know about.
+Never assume a year: use the date above when recency matters, and do not treat a date or a product you do not recognize as impossible or invented on that basis alone. Judge it by what the sources say instead.`;
+};
+
 export const claudePrompter: Prompter = {
   systemContext(pathname: string): string {
     if (pathname.startsWith('/chat/')) {
       return systemContexts['/chat'];
+    }
+    if (pathname === '/web-search') {
+      return systemContexts['/web-search'] + todayNote();
     }
     return systemContexts[pathname] || systemContexts['/chat'];
   },

@@ -13,6 +13,7 @@ import {
   PiPenNib,
   PiTranslate,
   PiGlobe,
+  PiGlobeHemisphereWest,
   PiImages,
   PiVideoLight,
   PiVideoCamera,
@@ -26,6 +27,7 @@ import {
  */
 const useCaseIconMap: Record<string, React.ReactNode> = {
   '/chat': <PiChatsCircle />,
+  '/web-search': <PiGlobeHemisphereWest />,
   '/rag': <PiChatCircleText />,
   '/rag-knowledge-base': <PiChatCircleText />,
   '/agent': <PiRobot />,

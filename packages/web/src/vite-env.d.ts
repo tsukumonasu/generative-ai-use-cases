@@ -45,6 +45,10 @@ interface ImportMetaEnv {
   readonly VITE_APP_BRANDING_LOGO_PATH: string;
   readonly VITE_APP_BRANDING_TITLE: string;
   readonly VITE_APP_MCP_SERVERS_CONFIG: string;
+  // Web search chat. Unset when the feature is not deployed.
+  readonly VITE_APP_WEB_GROUNDING_ENABLED?: string;
+  readonly VITE_APP_WEB_GROUNDING_STREAM_FUNCTION_ARN?: string;
+  readonly VITE_APP_WEB_GROUNDING_GPT_ENABLED?: string;
 }
 
 interface ImportMeta {

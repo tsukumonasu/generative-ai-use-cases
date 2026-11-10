@@ -103,7 +103,19 @@ const useChatPageState = create<StateType>((set) => {
 
 const DEFAULT_REASONING_BUDGET = 4096; // Claude 3.7 Sonnet recommended minimum value
 
-const ChatPage: React.FC = () => {
+type Props = {
+  // Heading shown instead of the default "Chat" (used by the web search chat)
+  pageTitle?: string;
+  // One-line explanation shown above an empty conversation
+  pageDescription?: string;
+  // Restricts the model selector, for pages that cannot use every model
+  availableModelIds?: string[];
+  // Extra controls shown after the model selector in the input toolbar
+  // (e.g. the web search engine)
+  inputToolbarContent?: React.ReactNode;
+};
+
+const ChatPage: React.FC<Props> = (props) => {
   const {
     content,
     inputSystemContext,
@@ -164,7 +176,11 @@ const ChatPage: React.FC = () => {
   const { createSystemContext } = useSystemContextApi();
   const { scrollableContainer, setFollowing } = useFollow();
   const { getChatTitle } = useChatList();
-  const { allModelIds: availableModels, modelDisplayName } = MODELS;
+  const { allModelIds, modelDisplayName } = MODELS;
+  const availableModels = useMemo(
+    () => props.availableModelIds ?? allModelIds,
+    [props.availableModelIds, allModelIds]
+  );
   const modelOptions = useMemo(
     () =>
       availableModels.map((m) => ({ value: m, label: modelDisplayName(m) })),
@@ -206,13 +222,14 @@ const ChatPage: React.FC = () => {
     // eslint-disable-next-line  react-hooks/exhaustive-deps
   }, [prompter]);
 
+  const defaultTitle = props.pageTitle ?? t('chat.title');
   const title = useMemo(() => {
     if (chatId) {
-      return getChatTitle(chatId) || t('chat.title');
+      return getChatTitle(chatId) || defaultTitle;
     } else {
-      return t('chat.title');
+      return defaultTitle;
     }
-  }, [chatId, getChatTitle, t]);
+  }, [chatId, getChatTitle, defaultTitle]);
 
   const accept = useMemo(() => {
     if (!modelId) return [];
@@ -622,6 +639,12 @@ const ChatPage: React.FC = () => {
           </div>
         )}
 
+        {props.pageDescription && isEmpty && !loadingMessages && (
+          <div className="mt-2 flex w-full justify-center px-4 text-center text-xs text-gray-600 print:hidden">
+            {props.pageDescription}
+          </div>
+        )}
+
         {((isEmpty && !loadingMessages) || loadingMessages) && (
           <div className="relative flex h-[calc(100vh-13rem)] flex-col items-center justify-center gap-y-4">
             <BedrockIcon
@@ -760,6 +783,7 @@ const ChatPage: React.FC = () => {
             modelId={modelId}
             onModelChange={onChangeModel}
             modelOptions={modelOptions}
+            toolbarEnd={props.inputToolbarContent}
             setting={setting}
             settingLabel={
               setting &&

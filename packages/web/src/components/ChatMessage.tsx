@@ -15,6 +15,7 @@ import {
   PiArrowDown,
   PiCloudArrowUp,
   PiCloudArrowDown,
+  PiMagnifyingGlass,
   PiNotePencil,
   PiCheck,
   PiX,
@@ -310,6 +311,23 @@ const ChatMessage: React.FC<Props> = (props) => {
                     ) : null}
                   </div>
                 )}
+                {/* The web search chat's search engine */}
+                {chatContent?.metadata?.webSearchUsage?.map((usage) => (
+                  <div
+                    key={usage.modelId}
+                    className="flex items-center gap-1 text-xs text-gray-400"
+                    title={t('chat.web_search_usage')}>
+                    <PiMagnifyingGlass />
+                    {usage.modelId}
+                    <span>
+                      {t('chat.web_search_calls', { calls: usage.calls })}
+                    </span>
+                    <PiArrowUp title="Input tokens" />
+                    {usage.inputTokens}
+                    <PiArrowDown title="Output tokens" />
+                    {usage.outputTokens}
+                  </div>
+                ))}
               </div>
             )}
           </div>

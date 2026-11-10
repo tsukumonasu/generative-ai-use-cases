@@ -51,6 +51,10 @@ type Props = {
   modelId?: string;
   onModelChange?: (modelId: string) => void;
   modelOptions?: { value: string; label: string }[];
+  // Extra controls in the input toolbar, before / after the
+  // model selector (e.g. the image settings)
+  toolbarStart?: React.ReactNode;
+  toolbarEnd?: React.ReactNode;
 } & (
   | {
       hideReset?: false;
@@ -277,6 +281,7 @@ const InputChatContent: React.FC<Props> = (props) => {
                 />
               </Tooltip>
             )}
+            {props.toolbarStart}
             {props.modelId && props.onModelChange && props.modelOptions && (
               // A native select is as wide as its longest option. The hidden
               // span holds only the selected label, with the same padding,
@@ -309,6 +314,7 @@ const InputChatContent: React.FC<Props> = (props) => {
                 </select>
               </div>
             )}
+            {props.toolbarEnd}
           </div>
           <div className="flex items-center gap-x-2">
             {props.setting && (

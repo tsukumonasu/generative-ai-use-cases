@@ -49,6 +49,11 @@ import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
 import GenerateDiagramPage from './pages/GenerateDiagramPage.tsx';
 import WriterPage from './pages/WriterPage.tsx';
 import useUseCases from './hooks/useUseCases';
+import WebSearchChatPage from './pages/WebSearchChatPage';
+import {
+  webGroundingEnabled,
+  WEB_SEARCH_PATHNAME,
+} from './hooks/useWebGrounding';
 import { Toaster } from 'sonner';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
@@ -101,6 +106,12 @@ const routes: RouteObject[] = [
     path: '/share/:shareId',
     element: <SharedChatPage />,
   },
+  webGroundingEnabled
+    ? {
+        path: WEB_SEARCH_PATHNAME,
+        element: <WebSearchChatPage />,
+      }
+    : null,
   enabled('generate')
     ? {
         path: '/generate',
