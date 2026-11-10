@@ -84,6 +84,20 @@ export interface BackendApiProps {
   readonly additionalS3Buckets?: Bucket[];
   // CORS
   readonly webUrl?: string;
+  // GPT Image (OpenAI Images API)
+  readonly openAiApiKey?: string;
+  readonly openAiImageModel?: string;
+  // Every model the user may pick, the default first
+  readonly openAiImageModels?: string[];
+  // Gemini (Google APIs via Workload Identity Federation)
+  readonly geminiWifAudience?: string;
+  readonly geminiServiceAccountEmail?: string;
+  readonly geminiProjectId?: string;
+  readonly geminiImageModel?: string;
+  readonly geminiImageModels?: string[];
+  readonly geminiImageLocation?: string;
+  readonly geminiVideoModel?: string;
+  readonly geminiVideoModels?: string[];
 }
 
 export class Api extends Construct {
@@ -91,6 +105,9 @@ export class Api extends Construct {
   readonly predictStreamFunction: NodejsFunction;
   readonly invokeFlowFunction: NodejsFunction;
   readonly optimizePromptFunction: NodejsFunction;
+  // Created only when the corresponding cdk.json parameters are set
+  readonly invokeGptImageFunction?: NodejsFunction;
+  readonly invokeGeminiFunction?: NodejsFunction;
   readonly apiHandler: NodejsFunction;
   readonly modelRegion: string;
   readonly modelIds: ModelConfiguration[];
@@ -386,6 +403,78 @@ export class Api extends Construct {
     });
     fileBucket.grantReadWrite(predictStreamFunction);
     predictStreamFunction.grantInvoke(idPool.authenticatedRole);
+
+    // GPT Image (OpenAI Images API)
+    // Created only when openAiApiKey is set in cdk.json.
+    // Invoked directly from the frontend to avoid the API Gateway 29s
+    // integration timeout (image generation can take several minutes).
+    if (props.openAiApiKey) {
+      const invokeGptImageFunction = new NodejsFunction(
+        this,
+        'InvokeGptImage',
+        {
+          runtime: LAMBDA_RUNTIME_NODEJS,
+          entry: './lambda/invokeGptImage.ts',
+          timeout: Duration.minutes(15),
+          memorySize: 512,
+          environment: {
+            USER_POOL_ID: userPool.userPoolId,
+            USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
+            BUCKET_NAME: fileBucket.bucketName,
+            TABLE_NAME: table.tableName,
+            OPENAI_API_KEY: props.openAiApiKey,
+            OPENAI_IMAGE_MODEL: props.openAiImageModel ?? '',
+            OPENAI_IMAGE_MODELS: JSON.stringify(props.openAiImageModels ?? []),
+          },
+          vpc,
+          securityGroups,
+        }
+      );
+      fileBucket.grantReadWrite(invokeGptImageFunction);
+      table.grantReadWriteData(invokeGptImageFunction);
+      invokeGptImageFunction.grantInvoke(idPool.authenticatedRole);
+      this.invokeGptImageFunction = invokeGptImageFunction;
+    }
+
+    // Gemini (Google APIs via Workload Identity Federation)
+    // Created only when geminiWifAudience / geminiServiceAccountEmail /
+    // geminiProjectId are all set in cdk.json.
+    // Invoked directly from the frontend to avoid the API Gateway 29s
+    // integration timeout (video generation can take several minutes).
+    // Calls Google APIs with a token obtained by exchanging the execution
+    // role's AWS credentials — no API key (see docs/en/DEPLOY_GEMINI_GPT_IMAGE.md).
+    if (
+      props.geminiWifAudience &&
+      props.geminiServiceAccountEmail &&
+      props.geminiProjectId
+    ) {
+      const invokeGeminiFunction = new NodejsFunction(this, 'InvokeGemini', {
+        runtime: LAMBDA_RUNTIME_NODEJS,
+        entry: './lambda/invokeGemini.ts',
+        timeout: Duration.minutes(15),
+        memorySize: 1024,
+        environment: {
+          USER_POOL_ID: userPool.userPoolId,
+          USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
+          BUCKET_NAME: fileBucket.bucketName,
+          TABLE_NAME: table.tableName,
+          GOOGLE_WIF_AUDIENCE: props.geminiWifAudience,
+          GOOGLE_SA_EMAIL: props.geminiServiceAccountEmail,
+          GOOGLE_PROJECT_ID: props.geminiProjectId,
+          GEMINI_IMAGE_MODEL: props.geminiImageModel ?? '',
+          GEMINI_IMAGE_MODELS: JSON.stringify(props.geminiImageModels ?? []),
+          GEMINI_IMAGE_LOCATION: props.geminiImageLocation ?? '',
+          GEMINI_VIDEO_MODEL: props.geminiVideoModel ?? '',
+          GEMINI_VIDEO_MODELS: JSON.stringify(props.geminiVideoModels ?? []),
+        },
+        vpc,
+        securityGroups,
+      });
+      fileBucket.grantReadWrite(invokeGeminiFunction);
+      table.grantReadWriteData(invokeGeminiFunction);
+      invokeGeminiFunction.grantInvoke(idPool.authenticatedRole);
+      this.invokeGeminiFunction = invokeGeminiFunction;
+    }
 
     const invokeFlowFunction = new NodejsFunction(this, 'InvokeFlow', {
       runtime: LAMBDA_RUNTIME_NODEJS,

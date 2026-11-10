@@ -71,6 +71,14 @@ export interface WebProps {
   readonly agentCoreRegion?: string;
   readonly researchAgentEnabled: boolean;
   readonly researchAgentRuntime?: AgentCoreConfiguration;
+  // GPT Image (OpenAI Images API). Undefined ARN = the feature is off.
+  readonly gptImageFunctionArn?: string;
+  // Models the user may pick, the default first
+  readonly gptImageModels: string[];
+  // Gemini image / video generation. Undefined ARN = the feature is off.
+  readonly geminiFunctionArn?: string;
+  readonly geminiImageModels: string[];
+  readonly geminiVideoModels: string[];
   readonly brandingConfig?: {
     logoPath?: string;
     title?: string;
@@ -314,6 +322,27 @@ export class Web extends Construct {
           props.agentCoreExternalRuntimes
         ),
         VITE_APP_RESEARCH_AGENT_ENABLED: props.researchAgentEnabled.toString(),
+        // GPT Image / Gemini: only set when enabled (the frontend treats a
+        // missing value as off), so other deployments build as before
+        ...(props.gptImageFunctionArn
+          ? {
+              VITE_APP_GPT_IMAGE_ENABLED: 'true',
+              VITE_APP_GPT_IMAGE_FUNCTION_ARN: props.gptImageFunctionArn,
+              VITE_APP_GPT_IMAGE_MODELS: JSON.stringify(props.gptImageModels),
+            }
+          : {}),
+        ...(props.geminiFunctionArn
+          ? {
+              VITE_APP_GEMINI_ENABLED: 'true',
+              VITE_APP_GEMINI_FUNCTION_ARN: props.geminiFunctionArn,
+              VITE_APP_GEMINI_IMAGE_MODELS: JSON.stringify(
+                props.geminiImageModels
+              ),
+              VITE_APP_GEMINI_VIDEO_MODELS: JSON.stringify(
+                props.geminiVideoModels
+              ),
+            }
+          : {}),
         VITE_APP_RESEARCH_AGENT_RUNTIME: JSON.stringify(
           props.researchAgentRuntime
         ),

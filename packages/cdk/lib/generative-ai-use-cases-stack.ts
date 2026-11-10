@@ -228,6 +228,23 @@ export class GenerativeAiUseCasesStack extends Stack {
       securityGroups,
     });
 
+    // The GPT Image / Gemini models users may pick, the default first
+    const withDefaultFirst = (defaultModel: string, models: string[]) => [
+      ...new Set([defaultModel, ...models]),
+    ];
+    const gptImageModels = withDefaultFirst(
+      params.openAiImageModel,
+      params.openAiImageModels
+    );
+    const geminiImageModels = withDefaultFirst(
+      params.geminiImageModel,
+      params.geminiImageModels
+    );
+    const geminiVideoModels = withDefaultFirst(
+      params.geminiVideoModel,
+      params.geminiVideoModels
+    );
+
     // API
     const api = new Api(this, 'API', {
       modelRegion: params.modelRegion,
@@ -290,6 +307,19 @@ export class GenerativeAiUseCasesStack extends Stack {
       knowledgeBaseDataSourceBucketName:
         props.knowledgeBaseDataSourceBucketName,
       dataSourceBucketName: rag?.dataSourceBucketName,
+      // GPT Image (OpenAI Images API)
+      openAiApiKey: params.openAiApiKey,
+      openAiImageModel: params.openAiImageModel,
+      openAiImageModels: gptImageModels,
+      // Gemini (Google APIs via Workload Identity Federation)
+      geminiWifAudience: params.geminiWifAudience,
+      geminiServiceAccountEmail: params.geminiServiceAccountEmail,
+      geminiProjectId: params.geminiProjectId,
+      geminiImageModel: params.geminiImageModel,
+      geminiImageModels,
+      geminiImageLocation: params.geminiImageLocation,
+      geminiVideoModel: params.geminiVideoModel,
+      geminiVideoModels,
     });
 
     // WAF
@@ -419,6 +449,12 @@ export class GenerativeAiUseCasesStack extends Stack {
         : undefined,
       // Frontend
       hiddenUseCases: params.hiddenUseCases,
+      // GPT Image / Gemini: on when the Lambda was created
+      gptImageFunctionArn: api.invokeGptImageFunction?.functionArn,
+      gptImageModels,
+      geminiFunctionArn: api.invokeGeminiFunction?.functionArn,
+      geminiImageModels,
+      geminiVideoModels,
       // Custom Domain
       cert: props.cert,
       hostName: params.hostName,
@@ -488,6 +524,29 @@ export class GenerativeAiUseCasesStack extends Stack {
     new CfnOutput(this, 'PredictStreamFunctionArn', {
       value: api.predictStreamFunction.functionArn,
     });
+
+    // GPT Image / Gemini: only output when enabled (read by setup-env.sh
+    // for local development)
+    if (api.invokeGptImageFunction) {
+      new CfnOutput(this, 'GptImageFunctionArn', {
+        value: api.invokeGptImageFunction.functionArn,
+      });
+      new CfnOutput(this, 'GptImageModels', {
+        value: JSON.stringify(gptImageModels),
+      });
+    }
+
+    if (api.invokeGeminiFunction) {
+      new CfnOutput(this, 'GeminiFunctionArn', {
+        value: api.invokeGeminiFunction.functionArn,
+      });
+      new CfnOutput(this, 'GeminiImageModels', {
+        value: JSON.stringify(geminiImageModels),
+      });
+      new CfnOutput(this, 'GeminiVideoModels', {
+        value: JSON.stringify(geminiVideoModels),
+      });
+    }
 
     new CfnOutput(this, 'OptimizePromptFunctionArn', {
       value: api.optimizePromptFunction.functionArn,

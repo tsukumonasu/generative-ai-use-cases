@@ -182,6 +182,24 @@ const baseStackInputSchema = z.object({
   createResearchAgentFargate: z.boolean().default(false),
   researchAgentBraveApiKey: z.string().default(''),
   researchAgentTavilyApiKey: z.string().default(''),
+  // GPT Image (OpenAI Images API). Nothing is created unless openAiApiKey is set.
+  openAiApiKey: z.string().default(''),
+  // Default model, plus the models users may pick on the image page
+  openAiImageModel: z.string().default('gpt-image-2.6-sunburst'),
+  openAiImageModels: z.array(z.string()).default([]),
+  // Gemini image / video generation (Google APIs via Workload Identity
+  // Federation, no API key). Nothing is created unless geminiWifAudience,
+  // geminiServiceAccountEmail and geminiProjectId are all set.
+  // See docs/en/DEPLOY_GEMINI_GPT_IMAGE.md for the Google-side setup that produces these values
+  geminiWifAudience: z.string().default(''),
+  geminiServiceAccountEmail: z.string().default(''),
+  geminiProjectId: z.string().default(''),
+  // Default models, plus the models users may pick on the image / video pages
+  geminiImageModel: z.string().default('gemini-nano-banana-2.1'),
+  geminiImageModels: z.array(z.string()).default([]),
+  geminiImageLocation: z.string().default('global'),
+  geminiVideoModel: z.string().default('gemini-omni-1.2-flash'),
+  geminiVideoModels: z.array(z.string()).default([]),
   // MCP
   mcpEnabled: z.boolean().default(false),
   // Guardrail

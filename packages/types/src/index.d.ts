@@ -4,6 +4,8 @@ export * from './message';
 export * from './chat';
 export * from './protocol';
 export * from './image';
+export * from './gptImage';
+export * from './gemini';
 export * from './video';
 export * from './text';
 export * from './utils';
