@@ -11,6 +11,10 @@ dependencies = [
   "uvicorn",
   "pydantic",
   "aws-opentelemetry-distro>=0.10.1",
+  "python-pptx>=1.0.2",
+  "python-docx>=1.2.0",
+  "xlsxwriter>=3.3.1",
+  "pypdfium2>=5.15.1",
 ]
 
 [tool.uv]

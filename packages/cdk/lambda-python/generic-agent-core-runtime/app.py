@@ -70,6 +70,9 @@ async def invocations(request: Request):
         agent_session_id = request_data.get("session_id")
         agent_id = request_data.get("agent_id")
         code_execution_enabled = request_data.get("code_execution_enabled", False)
+        # The invoking user's Google token for the Google Workspace MCP
+        # servers (never log request_data: it carries this token)
+        google_access_token = request_data.get("google_access_token")
 
         # Validate required fields
         if not model_info:
@@ -90,6 +93,7 @@ async def invocations(request: Request):
                     session_id=agent_session_id or session_id,
                     agent_id=agent_id,
                     code_execution_enabled=code_execution_enabled,
+                    google_access_token=google_access_token,
                 ):
                     yield chunk
             finally:

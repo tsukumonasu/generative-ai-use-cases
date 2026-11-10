@@ -10,7 +10,7 @@ from strands import Agent as StrandsAgent
 from strands.models import BedrockModel
 
 from .config import extract_model_info, get_max_iterations, get_max_tokens, get_system_prompt, supports_prompt_cache, supports_tools_cache
-from .tools import ToolManager
+from .tools import ToolManager, stop_mcp_clients
 from .types import Message, ModelInfo
 from .utils import (
     process_messages,
@@ -19,6 +19,16 @@ from .utils import (
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+GOOGLE_NOT_LINKED_PROMPT = """## About Google Workspace
+- The Google Workspace tools of this agent ({servers}) are unavailable for this request, because the user has not linked a Google account (or the link no longer covers what these tools need).
+- If the request needs them, tell the user to link Google (or re-link it) from the GenU settings page, then try again.
+"""
+
+GOOGLE_UNAVAILABLE_PROMPT = """## About Google Workspace
+- These Google Workspace tools of this agent could not be connected for this request: {servers}. The user's Google account is linked; the service itself failed.
+- If the request needs them, say that the service is temporarily unavailable and suggest trying again later or asking the administrator. Do not tell the user to link Google.
+"""
 
 
 class IterationLimitExceededError(Exception):
@@ -58,8 +68,11 @@ class AgentManager:
         session_id: str | None = None,
         agent_id: str | None = None,
         code_execution_enabled: bool | None = False,
+        google_access_token: str | None = None,
     ) -> AsyncGenerator[str]:
         """Process a request and yield streaming responses as raw events"""
+        user_token_clients = []
+        builtin_cleanups = []
         try:
             # Set session info if provided
             if session_id:
@@ -73,6 +86,19 @@ class AgentManager:
 
             # Get tools (MCP handling is done in ToolManager)
             tools = self.tool_manager.get_tools_with_options(code_execution_enabled=code_execution_enabled, mcp_servers=mcp_servers)
+
+            # Google Workspace MCP servers, connected for this request only
+            user_token_tools, user_token_clients, unavailable_servers = self.tool_manager.load_user_token_mcp_tools(mcp_servers, google_access_token)
+            tools = tools + user_token_tools
+            # Built-in servers (office-documents)
+            builtin_tools, builtin_prompt, builtin_cleanups = self.tool_manager.load_builtin_tools(mcp_servers, google_access_token)
+            tools = tools + builtin_tools
+            if builtin_prompt:
+                combined_system_prompt = f"{combined_system_prompt}\n{builtin_prompt}"
+            if unavailable_servers:
+                # Without a token nothing was tried; with one, the server itself failed
+                note = GOOGLE_UNAVAILABLE_PROMPT if google_access_token else GOOGLE_NOT_LINKED_PROMPT
+                combined_system_prompt = f"{combined_system_prompt}\n{note.format(servers=', '.join(unavailable_servers))}"
             logger.info(f"Loaded {len(tools)} tools (code execution: {code_execution_enabled})")
 
             # Log agent info
@@ -131,6 +157,14 @@ class AgentManager:
             }
             yield json.dumps(error_event, ensure_ascii=False) + "\n"
         finally:
+            # Per-request clients hold the user's Google token: close them now
+            stop_mcp_clients(user_token_clients)
+            # Built-ins that hold a user's token release it here
+            for cleanup in builtin_cleanups:
+                try:
+                    cleanup()
+                except Exception as e:
+                    logger.warning(f"Error cleaning up a built-in tool: {e}")
             # Cleanup is handled automatically by the dynamic MCP client
             if user_id:
                 logger.debug(f"Session cleanup for user {user_id} handled automatically")
