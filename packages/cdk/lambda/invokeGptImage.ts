@@ -61,9 +61,12 @@ export const handler = async (
   try {
     chatId = await recordMediaChat({
       userId,
-      prompt: req.prompt,
+      // Pages with a long machine-oriented prompt record a readable label
+      prompt: req.historyPrompt || req.prompt,
       existingChatId: event.chatId,
-      usecase: '/gpt-image',
+      // The manga page reuses this Lambda and records under its own usecase.
+      // Only known values are accepted: the field comes from the client.
+      usecase: event.usecase === '/manga' ? '/manga' : '/gpt-image',
       userExtraData,
       assistantExtraData,
     });

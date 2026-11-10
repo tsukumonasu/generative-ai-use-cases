@@ -41,6 +41,10 @@ export type GenerateImageGptRequest = {
   // Transcript of a referenced chat conversation. Prepended to the prompt
   // for the model call only — the recorded chat history keeps just prompt
   chatContext?: string;
+  // Human-readable label recorded in the chat history in place of prompt.
+  // The mirror of chatContext: used when the prompt sent to the model is
+  // long and machine-oriented (the manga page composes one per page)
+  historyPrompt?: string;
   size?: GptImageSize;
   quality?: GptImageQuality;
   // 'transparent' needs png or webp output (the backend switches the
@@ -86,4 +90,8 @@ export type GptImageInvokeEvent = {
   // Chat ID of an ongoing interactive session — when set, the generation
   // is appended to this chat instead of creating a new one
   chatId?: string;
+  // Usecase path the generation is recorded under in the chat history
+  // (drives the history sidebar icon). Defaults to '/gpt-image'; pages that
+  // reuse this Lambda (the manga page) override it.
+  usecase?: '/gpt-image' | '/manga';
 };

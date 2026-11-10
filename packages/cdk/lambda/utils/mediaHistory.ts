@@ -31,7 +31,11 @@ export type MediaOutput = {
 };
 
 // Matches the route path so the chat history sidebar shows the right icon
-export type MediaUsecase = '/gpt-image' | '/gemini-image' | '/gemini-video';
+export type MediaUsecase =
+  | '/gpt-image'
+  | '/gemini-image'
+  | '/gemini-video'
+  | '/manga';
 
 const extensionOf = (mediaType: string): string => {
   if (mediaType.includes('jpeg')) return 'jpg';

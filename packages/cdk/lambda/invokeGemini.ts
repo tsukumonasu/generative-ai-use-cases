@@ -69,8 +69,17 @@ export const handler = async (
   try {
     chatId = await recordMediaChat({
       userId,
-      prompt: req.prompt,
-      usecase: event.mode === 'video' ? '/gemini-video' : '/gemini-image',
+      // Pages with a long machine-oriented prompt record a readable label
+      prompt: (req as GenerateImageGeminiRequest).historyPrompt || req.prompt,
+      // The manga page reuses this Lambda (image mode) and records under its
+      // own usecase. Only known values are accepted: the field comes from
+      // the client.
+      usecase:
+        event.mode === 'video'
+          ? '/gemini-video'
+          : event.usecase === '/manga'
+            ? '/manga'
+            : '/gemini-image',
       existingChatId: event.chatId,
       userExtraData,
       assistantExtraData,
