@@ -106,11 +106,17 @@ export type UpdateTitleResponse = {
   chat: Chat;
 };
 
+// Search engine behind the web search chat's web_search tool:
+// Amazon Nova web grounding, or Amazon Bedrock Web Search on a GPT model
+export type WebSearchEngine = 'nova' | 'gpt';
+
 export type PredictRequest = {
   model?: Model;
   idToken?: string;
   messages: UnrecordedMessage[];
   id: string;
+  // Only read by the web search chat Lambda
+  webSearchEngine?: WebSearchEngine;
 };
 
 export type PredictResponse = string;

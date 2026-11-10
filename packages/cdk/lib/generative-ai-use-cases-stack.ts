@@ -239,6 +239,12 @@ export class GenerativeAiUseCasesStack extends Stack {
       customAgents: params.agents,
       queryDecompositionEnabled: params.queryDecompositionEnabled,
       rerankingModelId: params.rerankingModelId,
+      // Web search chat (Amazon Nova web grounding)
+      webGroundingEnabled: params.webGroundingEnabled,
+      webGroundingModelId: params.webGroundingModelId,
+      webGroundingRegion: params.webGroundingRegion,
+      webGroundingGptModelId: params.webGroundingGptModelId,
+      webGroundingGptRegion: params.webGroundingGptRegion,
       crossAccountBedrockRoleArn: params.crossAccountBedrockRoleArn,
       userPool: auth.userPool,
       idPool: auth.idPool,
@@ -410,6 +416,10 @@ export class GenerativeAiUseCasesStack extends Stack {
       agentCoreExternalRuntimes: params.agentCoreExternalRuntimes,
       agentCoreRegion: params.agentCoreRegion,
       researchAgentEnabled: params.researchAgentEnabled,
+      // Web search chat: only passed when its Lambda exists
+      webGroundingStreamFunctionArn:
+        api.webGroundingStreamFunction?.functionArn,
+      webGroundingGptEnabled: api.webGroundingGptEnabled,
       researchAgentRuntime: researchRuntimeArn
         ? {
             name: researchRuntimeName || 'ResearchAgentCoreRuntime',
@@ -488,6 +498,18 @@ export class GenerativeAiUseCasesStack extends Stack {
     new CfnOutput(this, 'PredictStreamFunctionArn', {
       value: api.predictStreamFunction.functionArn,
     });
+
+    // Web search chat: outputs exist only when the feature is deployed
+    // (setup-env.sh reads a missing output as empty, i.e. off)
+    if (api.webGroundingStreamFunction) {
+      new CfnOutput(this, 'WebGroundingEnabled', { value: 'true' });
+      new CfnOutput(this, 'WebGroundingStreamFunctionArn', {
+        value: api.webGroundingStreamFunction.functionArn,
+      });
+      new CfnOutput(this, 'WebGroundingGptEnabled', {
+        value: api.webGroundingGptEnabled.toString(),
+      });
+    }
 
     new CfnOutput(this, 'OptimizePromptFunctionArn', {
       value: api.optimizePromptFunction.functionArn,

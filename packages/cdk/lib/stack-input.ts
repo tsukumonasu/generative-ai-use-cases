@@ -182,6 +182,20 @@ const baseStackInputSchema = z.object({
   createResearchAgentFargate: z.boolean().default(false),
   researchAgentBraveApiKey: z.string().default(''),
   researchAgentTavilyApiKey: z.string().default(''),
+  // Web search chat (Amazon Nova web grounding system tool).
+  // Nothing is created unless webGroundingEnabled is explicitly true.
+  // The grounding model must be a Nova 2 model in a US region / US CRIS
+  // profile: https://docs.aws.amazon.com/nova/latest/nova2-userguide/web-grounding.html
+  webGroundingEnabled: z.boolean().default(false),
+  webGroundingModelId: z.string().default('us.amazon.nova-2-lite-v1:0'),
+  webGroundingRegion: z.string().default('us-east-1'),
+  // Optional second search engine for the same page: Amazon Bedrock Web Search
+  // (the server-side web_search tool of the bedrock-mantle Responses API).
+  // Empty = Nova only. Needs an OpenAI GPT model ID as mantle names it
+  // (no regional prefix) and a US region:
+  // https://docs.aws.amazon.com/bedrock/latest/userguide/web-search.html
+  webGroundingGptModelId: z.string().default(''),
+  webGroundingGptRegion: z.string().default('us-east-1'),
   // MCP
   mcpEnabled: z.boolean().default(false),
   // Guardrail

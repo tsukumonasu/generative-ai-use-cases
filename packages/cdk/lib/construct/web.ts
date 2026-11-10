@@ -71,6 +71,10 @@ export interface WebProps {
   readonly agentCoreRegion?: string;
   readonly researchAgentEnabled: boolean;
   readonly researchAgentRuntime?: AgentCoreConfiguration;
+  // Web search chat (Amazon Nova web grounding / Amazon Bedrock Web Search).
+  // Set only when the feature is deployed.
+  readonly webGroundingStreamFunctionArn?: string;
+  readonly webGroundingGptEnabled?: boolean;
   readonly brandingConfig?: {
     logoPath?: string;
     title?: string;
@@ -314,6 +318,18 @@ export class Web extends Construct {
           props.agentCoreExternalRuntimes
         ),
         VITE_APP_RESEARCH_AGENT_ENABLED: props.researchAgentEnabled.toString(),
+        // Only set when the web search chat is deployed (the frontend treats
+        // a missing value as off), so other deployments build as before
+        ...(props.webGroundingStreamFunctionArn
+          ? {
+              VITE_APP_WEB_GROUNDING_ENABLED: 'true',
+              VITE_APP_WEB_GROUNDING_STREAM_FUNCTION_ARN:
+                props.webGroundingStreamFunctionArn,
+              VITE_APP_WEB_GROUNDING_GPT_ENABLED: (
+                props.webGroundingGptEnabled ?? false
+              ).toString(),
+            }
+          : {}),
         VITE_APP_RESEARCH_AGENT_RUNTIME: JSON.stringify(
           props.researchAgentRuntime
         ),

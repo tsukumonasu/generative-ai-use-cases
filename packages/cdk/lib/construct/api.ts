@@ -84,6 +84,13 @@ export interface BackendApiProps {
   readonly additionalS3Buckets?: Bucket[];
   // CORS
   readonly webUrl?: string;
+  // Web search chat (Amazon Nova web grounding)
+  readonly webGroundingEnabled?: boolean;
+  readonly webGroundingModelId?: string;
+  readonly webGroundingRegion?: string;
+  // Optional GPT engine (Amazon Bedrock Web Search on bedrock-mantle)
+  readonly webGroundingGptModelId?: string;
+  readonly webGroundingGptRegion?: string;
 }
 
 export class Api extends Construct {
@@ -91,6 +98,10 @@ export class Api extends Construct {
   readonly predictStreamFunction: NodejsFunction;
   readonly invokeFlowFunction: NodejsFunction;
   readonly optimizePromptFunction: NodejsFunction;
+  // Created only when webGroundingEnabled is true
+  readonly webGroundingStreamFunction?: NodejsFunction;
+  // Whether the web search chat can also search with Bedrock Web Search (GPT)
+  readonly webGroundingGptEnabled: boolean;
   readonly apiHandler: NodejsFunction;
   readonly modelRegion: string;
   readonly modelIds: ModelConfiguration[];
@@ -387,6 +398,80 @@ export class Api extends Construct {
     fileBucket.grantReadWrite(predictStreamFunction);
     predictStreamFunction.grantInvoke(idPool.authenticatedRole);
 
+    // Web search chat (Amazon Nova web grounding).
+    // Created only when webGroundingEnabled is true in cdk.json.
+    // Streams like predictStream, but gives the selected model a web_search
+    // tool that is served by Nova web grounding.
+    // When webGroundingGptModelId is also set, the user can switch the search
+    // engine behind that tool to Amazon Bedrock Web Search (GPT).
+    const webGroundingGptModelId = props.webGroundingGptModelId ?? '';
+    const webGroundingGptRegion = props.webGroundingGptRegion || 'us-east-1';
+    this.webGroundingGptEnabled =
+      !!props.webGroundingEnabled && webGroundingGptModelId !== '';
+    if (props.webGroundingEnabled) {
+      const webGroundingStreamFunction = new NodejsFunction(
+        this,
+        'WebGroundingStream',
+        {
+          runtime: LAMBDA_RUNTIME_NODEJS,
+          entry: './lambda/webGroundingStream.ts',
+          timeout: Duration.minutes(15),
+          memorySize: 512,
+          environment: {
+            USER_POOL_ID: userPool.userPoolId,
+            USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
+            MODEL_REGION: modelRegion,
+            MODEL_IDS: JSON.stringify(modelIds),
+            CROSS_ACCOUNT_BEDROCK_ROLE_ARN: crossAccountBedrockRoleArn ?? '',
+            BUCKET_NAME: fileBucket.bucketName,
+            WEB_GROUNDING_MODEL_ID: props.webGroundingModelId ?? '',
+            WEB_GROUNDING_REGION: props.webGroundingRegion ?? '',
+            WEB_GROUNDING_GPT_MODEL_ID: webGroundingGptModelId,
+            WEB_GROUNDING_GPT_REGION: webGroundingGptRegion,
+            ...(props.guardrailIdentify
+              ? { GUARDRAIL_IDENTIFIER: props.guardrailIdentify }
+              : {}),
+            ...(props.guardrailVersion
+              ? { GUARDRAIL_VERSION: props.guardrailVersion }
+              : {}),
+          },
+          vpc,
+          securityGroups,
+        }
+      );
+      fileBucket.grantReadWrite(webGroundingStreamFunction);
+      webGroundingStreamFunction.grantInvoke(idPool.authenticatedRole);
+      this.webGroundingStreamFunction = webGroundingStreamFunction;
+
+      // Bedrock Web Search lives outside the bedrock:* namespace: the model
+      // call is bedrock-mantle (Responses API, SigV4-signed with this role's
+      // own credentials, so cross-account Bedrock is not used for it) and the
+      // search itself is bedrock-websearch. ExternalWebAccess is deliberately
+      // not granted: the Lambda always sends external_web_access: false, which
+      // keeps retrieval inside the AWS boundary.
+      if (this.webGroundingGptEnabled) {
+        webGroundingStreamFunction.addToRolePolicy(
+          new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: ['bedrock-mantle:CreateInference'],
+            resources: [
+              `arn:aws:bedrock-mantle:${webGroundingGptRegion}:${Stack.of(this).account}:project/*`,
+            ],
+          })
+        );
+        webGroundingStreamFunction.addToRolePolicy(
+          new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+              'bedrock-websearch:InvokeSearch',
+              'bedrock-websearch:InvokeFetch',
+            ],
+            resources: ['*'],
+          })
+        );
+      }
+    }
+
     const invokeFlowFunction = new NodejsFunction(this, 'InvokeFlow', {
       runtime: LAMBDA_RUNTIME_NODEJS,
       bundling: bedrockSdkBundling,
@@ -566,6 +651,12 @@ export class Api extends Construct {
       predictStreamFunction.role?.addToPrincipalPolicy(bedrockPolicy);
       invokeFlowFunction.role?.addToPrincipalPolicy(bedrockPolicy);
       optimizePromptFunction.role?.addToPrincipalPolicy(bedrockPolicy);
+      // bedrock:* covers bedrock:InvokeTool on the nova_grounding system tool.
+      // Note that web grounding calls arrive with aws:requestedRegion set to
+      // "unspecified", so an SCP that pins regions will block them.
+      this.webGroundingStreamFunction?.role?.addToPrincipalPolicy(
+        bedrockPolicy
+      );
     } else {
       const logsPolicy = new PolicyStatement({
         effect: Effect.ALLOW,
@@ -581,6 +672,10 @@ export class Api extends Construct {
       apiHandler.role?.addToPrincipalPolicy(assumeRolePolicy);
       predictStreamFunction.role?.addToPrincipalPolicy(logsPolicy);
       predictStreamFunction.role?.addToPrincipalPolicy(assumeRolePolicy);
+      this.webGroundingStreamFunction?.role?.addToPrincipalPolicy(logsPolicy);
+      this.webGroundingStreamFunction?.role?.addToPrincipalPolicy(
+        assumeRolePolicy
+      );
     }
 
     // API Gateway

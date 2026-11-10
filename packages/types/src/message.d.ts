@@ -67,6 +67,18 @@ export type Metadata = {
     cacheReadInputTokens?: number;
     cacheWriteInputTokens?: number;
   };
+  // What the web search chat's search engine (Nova web grounding
+  // or Bedrock Web Search on GPT) used for this answer, one entry per model.
+  // Kept out of usage, which belongs to llmType and feeds the token stats.
+  webSearchUsage?: WebSearchUsage[];
+};
+
+export type WebSearchUsage = {
+  modelId: string;
+  // Searches that returned a result
+  calls: number;
+  inputTokens: number;
+  outputTokens: number;
 };
 
 export type UploadedFileType = {
