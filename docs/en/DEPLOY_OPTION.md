@@ -1117,6 +1117,18 @@ const envs: Record<string, Partial<StackInput>> = {
 }
 ```
 
+### Enabling the Backlog Page
+
+The Backlog page lets each user work with [Backlog](https://backlog.com/) with the permissions of their own Backlog account: this week's tasks, unfinished issues, an activity summary, a Gantt chart, and AI-drafted issues, comments and documents that are registered only when the user presses the button. It is disabled by default; the workload identity, the API and the menu item are created only when `backlogEnabled` is `true`.
+
+- `backlogEnabled`: `true` to enable
+- `backlogSpaceDomain`: the Backlog space, e.g. `example.backlog.com`
+- `backlogCredentialProviderName`: name of the AgentCore Identity OAuth2 credential provider you create by hand
+- `backlogAllowedUsers`: users who may link Backlog (`cognito:username`); `["*"]` for everyone
+- `backlogInProgressOnCreateProjects`: (optional) project keys whose new issues are set to In Progress right after creation
+
+For the Backlog application and how to create the credential provider, please refer to [Backlog Page](./BACKLOG.md).
+
 ### Enabling Prompt Optimization Tool
 
 The prompt optimization tool converts input prompts into an optimal form for the specified model.

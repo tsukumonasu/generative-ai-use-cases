@@ -1136,6 +1136,18 @@ const envs: Record<string, Partial<StackInput>> = {
 }
 ```
 
+### Backlog のページの有効化
+
+Backlog のページでは、各利用者が自分の Backlog アカウントの権限で [Backlog](https://backlog.com/ja/) を使えます。今週のタスク・未完了の課題・活動のまとめ・ガントチャートの表示と、AI が下書きした課題・コメント・ドキュメントの登録 (利用者がボタンを押したときだけ) ができます。既定では無効で、`backlogEnabled` を `true` にした場合のみワークロード ID・API・メニューが作成されます。
+
+- `backlogEnabled`: `true` で有効
+- `backlogSpaceDomain`: Backlog のスペース (例: `example.backlog.com`)
+- `backlogCredentialProviderName`: 手作業で作成する AgentCore Identity の OAuth2 クレデンシャルプロバイダーの名前
+- `backlogAllowedUsers`: 連携を許可する利用者 (`cognito:username`)。全員なら `["*"]`
+- `backlogInProgressOnCreateProjects`: (任意) 課題の作成直後に処理中にするプロジェクトのキー
+
+Backlog のアプリケーションの登録とクレデンシャルプロバイダーの作成手順は [Backlog のページ](./BACKLOG.md) を参照してください。
+
 ### プロンプト最適化ツールの有効化
 
 プロンプト最適化ツールは入力したプロンプトを指定したモデルに最適な形に変換します。
