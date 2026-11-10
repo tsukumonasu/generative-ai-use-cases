@@ -155,7 +155,7 @@ echo "geminiServiceAccountEmail: genu-gemini@${PROJECT_ID}.iam.gserviceaccount.c
 echo "geminiProjectId: ${PROJECT_ID}"
 ```
 
-Set the three printed values in `context` of `packages/cdk/cdk.json` and deploy GenU. After the deployment, "Image Generation & Editing" and "Video Generation & Editing" appear in the menu (the image page is shared with GPT Image).
+Set the three printed values in `context` of `packages/cdk/cdk.json` and deploy GenU. After the deployment, "Image Generation & Editing", "Video Generation & Editing" and "Manga Generation" appear in the menu (the image page and the manga page are shared with GPT Image; for the manga page see [MANGA.md](./MANGA.md)).
 
 ### Features and limits
 

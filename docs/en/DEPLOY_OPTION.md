@@ -987,6 +987,8 @@ Images and videos can also be generated with models outside Amazon Bedrock: Goog
 
 For the Google Cloud setup and all parameters, please refer to [Deploying Image / Video Generation (Gemini / GPT Image)](./DEPLOY_GEMINI_GPT_IMAGE.md).
 
+When either of them is enabled, "Manga Generation" also appears: it generates a multi-page manga from a scenario or a chat conversation (no setting of its own and no additional AWS resources). For usage, please refer to [Manga Generation](./MANGA.md).
+
 ### Enabling Video Analysis Use Case
 
 In the video analysis use case, you input video image frames and text to have the LLM analyze the image content.

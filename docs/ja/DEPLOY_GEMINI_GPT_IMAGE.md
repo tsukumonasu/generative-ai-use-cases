@@ -155,7 +155,7 @@ echo "geminiServiceAccountEmail: genu-gemini@${PROJECT_ID}.iam.gserviceaccount.c
 echo "geminiProjectId: ${PROJECT_ID}"
 ```
 
-出力された 3 つの値を `packages/cdk/cdk.json` の `context` に設定し、GenU をデプロイします。デプロイ後、メニューに「画像生成・編集」「動画生成・編集」が表示されます (画像生成・編集は GPT Image と共通の画面です)。
+出力された 3 つの値を `packages/cdk/cdk.json` の `context` に設定し、GenU をデプロイします。デプロイ後、メニューに「画像生成・編集」「動画生成・編集」「漫画生成」が表示されます (画像生成・編集と漫画生成は GPT Image と共通の画面です。漫画生成の使い方は [MANGA.md](./MANGA.md) を参照)。
 
 ### 機能・制約
 
