@@ -136,6 +136,229 @@ auth:
   loading: Loading...
   login: Login
   title: Generative AI Use Cases on AWS
+backlog:
+  callback_completing: Completing the link with Backlog...
+  callback_failed: Could not complete the link with Backlog. Please try again.
+  callback_linked: Backlog is linked. You can use it on the Backlog page.
+  callback_title: Link Backlog
+  compose:
+    another: Create another
+    assignee: Assignee
+    comment: Comment
+    comment_added: The comment was posted.
+    comment_duplicate: The same comment had just been posted, so it was not posted twice.
+    comment_help: AI drafts a progress comment for an issue from a past chat or a Claude Code log, using only what happened after your last comment so nothing is repeated. Read the whole comment, then press Post. The status, assignee and due date do not change.
+    comment_instead: Comment on this issue
+    comment_request_label: Extra instructions (optional)
+    comment_request_placeholder: e.g. Describe the problems in detail
+    copy_help: Create an issue for recurring work in the same form as an earlier issue. Choose the earlier issue and write what is different this time.
+    copy_request_label: What is different this time
+    copy_request_placeholder: e.g. The deadline moves to the end of the month
+    defaulted: Default
+    defaults_help: 'Fields marked Default were not specified: the assignee is you, the start date is today, the priority is normal and there is no due date. Change them if needed.'
+    description: Description
+    document_added: The document was created.
+    document_content: Content
+    document_duplicate: A document with the same title had just been created, so it was not created twice.
+    document_link_comment: Comment to leave on the issue
+    document_link_comment_default: 'Created the document "{{title}}".'
+    document_link_comment_help: The URL of the new document is added at the end of the comment.
+    document_link_failed: 'The document was created, but the comment on {{key}} failed.'
+    document_link_issue: Issue to leave the link on (optional)
+    document_linked: 'Commented the link on {{key}}'
+    document_parent: Place
+    document_parent_top: Top level
+    document_request_label: Request or notes (optional)
+    document_title: Title
+    document_update_note: Backlog documents cannot be updated from GenU. To fix one, edit it in Backlog.
+    draft: Draft
+    draft_failed: Could not create the draft. Please try again.
+    due_date: Due date
+    edit: Edit
+    failed: Could not register it in Backlog.
+    find: Find
+    forbidden: You do not have the Backlog permission for this.
+    format_backlog: Backlog notation
+    format_markdown: Markdown
+    in_progress_failed: Could not set the status to In Progress. Please change it in Backlog.
+    in_progress_note: In this project, a new issue is set to In Progress right after it is registered.
+    issue_added: The issue was registered.
+    issue_duplicate: An issue with the same subject had just been registered, so it was not registered twice.
+    issue_key: Issue key
+    issue_key_invalid: The issue key is not valid (e.g. PROJ-42).
+    issue_key_placeholder: e.g. PROJ-42
+    issue_type: Issue type
+    knowledge_help: Sum up what worked and what went wrong in a development conversation or log as a document. You can leave its link on a related issue.
+    knowledge_request_placeholder: e.g. Sum up the pitfalls of the release for the next person
+    last_comment: 'Your last comment: {{time}}'
+    load_issue: Load
+    minutes_help: Make minutes from a meeting transcript or notes (a file or a past chat) and register them as a document of the project.
+    minutes_request_placeholder: e.g. Minutes of the weekly meeting on 11/8
+    new_help: AI drafts an issue from a short request, a past chat or a file. Check and fix every field, then press Register.
+    no_last_comment: You have not commented on this issue yet.
+    not_found: Not found in Backlog. Please check the issue key or the project.
+    notes: 'Points to check from AI: {{notes}}'
+    only_since_last: 'Use only the log after your last comment ({{time}})'
+    open: Open
+    post_comment: Post
+    post_help: 'Posts the comment to {{key}}.'
+    preview: Preview
+    priority: Priority
+    project: Project
+    redraft: Draft again
+    register_document_and_link_help: 'Creates the document in {{project}} and comments its link on {{key}}.'
+    register_document_help: 'Creates the document in {{project}}.'
+    register_help: 'Registers the issue in {{project}}.'
+    register_issue: Register
+    relate_failed: Could not relate the issues. Please set it in Backlog.
+    relate_to_this: Create a new one related to this
+    related: 'Related to {{key}}.'
+    related_issue: Related issue (optional)
+    related_issue_placeholder: e.g. PROJ-123
+    request_label: Request or notes (one line is fine)
+    request_placeholder: e.g. Add an issue to update the dependencies of the web app
+    review: Check what will be registered
+    set_in_progress: The status was set to In Progress.
+    similar_help: There are similar issues. To continue one of them, comment on it; to create a new one, you can relate it.
+    source:
+      characters: '{{n}} characters'
+      choose_chat: Choose a past chat
+      choose_file: Choose a file
+      hint: 'Files: text, Markdown, transcripts (.vtt) and Claude Code conversation logs (.jsonl under ~/.claude/projects/).'
+      label: Source material
+      log_empty: This log has no usable messages. There may be none after your last comment.
+      log_messages: 'Claude Code log ({{n}} messages)'
+      too_large: The file is too large (up to 50 MB).
+    start_date: Start date
+    summary: Subject
+    template_label: Earlier issue (issue key or keyword)
+    template_placeholder: e.g. PROJ-12 or monthly report
+    unassigned: Unassigned
+  draft:
+    comment_sections: Decisions on the design|Features added (with PR numbers and commits)|Done by hand|Problems and fixes (for next time)|Checked on screen|Remaining
+    issue_sections: Overview|Background|To do
+    knowledge_sections: Conclusion|What worked|Problems and fixes|Steps and settings|Related issues and materials
+    language: English
+    minutes_sections: Overview|Attendees|Decisions|Next actions (owner and due date)|Source materials
+    report_sections: Done|In progress|Next (due soon)|Stalled
+  link: Link Backlog
+  link_failed: Could not start linking Backlog.
+  page:
+    activities:
+      button: Activity summary
+      commented: 'Comments: {{n}}'
+      completed: Completed
+      copy: Copy as text
+      created: Added
+      empty: No activity on issues in this period.
+      heading: 'Activity summary ({{since}} - {{today}})'
+      help: What you did on issues (added, updated, commented, completed) from the chosen day to today, by issue. Useful for weekly meeting reports.
+      report: Write it up for the meeting
+      report_help: AI writes a weekly meeting report from your activity and your issues due soon or stalled. Nothing is written to Backlog.
+      separator: ', '
+      show: Show
+      since: Since (e.g. the last weekly meeting)
+      status_now: 'Now: {{status}}'
+      summary: '{{issues}} issues (added {{created}}, completed {{completed}}, comments {{comments}})'
+      truncated: There were many activities, so only the latest 500 are summarized.
+      updated: 'Updated: {{fields}}'
+    description: Check this week's tasks, your unfinished issues, your activity and a Gantt chart with your own Backlog account.
+    fields:
+      actualHours: Actual hours
+      assigner: Assignee
+      attachment: Attachment
+      component: Category
+      description: Description
+      estimatedHours: Estimated hours
+      issueType: Issue type
+      limitDate: Due date
+      milestone: Milestone
+      parentIssue: Parent issue
+      priority: Priority
+      resolution: Resolution
+      startDate: Start date
+      status: Status
+      summary: Subject
+    gantt:
+      button: Gantt chart
+      closed: Show closed issues too
+      earlier: 'Unfinished issues due before the period ({{n}})'
+      empty: No issues to show in this period.
+      heading: 'Gantt chart ({{start}} - {{end}})'
+      help: 'Shows the issues assigned to the people you add (every status except Closed) as bars from the start date to the due date. Search people by name, login ID or email and add them one by one (up to {{n}}). They are saved in this browser and shown again next time. Click a bar to open the issue in Backlog.'
+      issue: Issue
+      later: '{{n}} unfinished issues start after the period.'
+      legend_closed: Closed
+      legend_due_only: Due date only (no start date)
+      legend_no_due: No due date (shown up to today)
+      legend_overdue: Overdue
+      legend_status: Colors are the status colors in Backlog.
+      legend_today: Today
+      members_failed: Could not load the members. The people already added can still be shown.
+      next: Next period
+      no_match: No one matches.
+      no_people: Add people to show.
+      none: none
+      people: People to show
+      people_limit: 'Up to {{n}} people at a time'
+      people_placeholder: Search by name, ID or email to add
+      person_heading: '{{name}} ({{n}})'
+      person_myself: '{{name}} (you)'
+      prev: Previous period
+      project: Project
+      project_all: All projects
+      project_option: '{{key}} ({{name}})'
+      reload: Refresh
+      remove: 'Remove {{name}}'
+      span: Period
+      span_weeks: '{{n}} weeks'
+      start: Chart starts on
+      this_week: This week
+      title_dates: 'Start: {{start}} / Due: {{due}}'
+      title_status: 'Status: {{status}} / Assignee: {{assignee}}'
+      truncated: Too many issues, so only some are shown. Add fewer people or pick a project.
+      undated: 'Unfinished issues with neither a start nor a due date ({{n}})'
+    link_required: Link Backlog to see this week's tasks and more here.
+    load_failed: Could not read Backlog. Please try again later.
+    loading: Reading Backlog...
+    not_allowed: Backlog linking is not allowed for your account.
+    open_tasks:
+      button: My unfinished issues
+      empty: No unfinished issues.
+      heading: 'My unfinished issues ({{n}})'
+      help: 'Every issue assigned to you that is not Closed, by project, soonest due first. Issues not updated for {{days}} days or more are marked as stalled.'
+    project_heading: '{{name}} ({{n}})'
+    task:
+      due: 'Due {{date}}'
+      no_due: No due date
+      priority: 'Priority {{name}}'
+      stalled: Stalled
+    title: Backlog
+    truncated: 'There are many issues, so only the {{n}} due soonest are shown.'
+    weekly_tasks:
+      button: This week's tasks
+      empty_overdue: No overdue issues.
+      empty_this_week: No issues due this week.
+      heading: "This week's tasks ({{start}} - {{end}})"
+      help: Unfinished issues assigned to you (any status except Closed) that are overdue or due this week (Monday to Sunday). Issues without a due date are not shown.
+      overdue: 'Overdue ({{n}})'
+      this_week: 'Due this week ({{n}})'
+    write:
+      comment: Post a progress comment
+      copy_issue: Create like an earlier issue
+      help: AI drafts and you check before registering. Nothing is registered until you press Register or Post.
+      knowledge: Sum up knowledge as a document
+      minutes: Make minutes a document
+      new_issue: Create an issue
+  relink: Link again
+  setting_help: Lets the Backlog page use Backlog with the permissions of your own Backlog account. Issues, comments and documents are registered only when you press the button on the Backlog page.
+  setting_name: Backlog link
+  status_error: Could not get the link status. Please contact the administrator.
+  status_expired: The link has expired. Please link again.
+  status_linked: Linked
+  status_linked_as: 'Linked ({{name}})'
+  status_not_linked: Not linked
+  unlink: Unlink
 chart:
   data_limit_exceeded: Chart data exceeds the display limit. Please reduce the number of data points (max 10,000) or series (max 50).
   download_png: Download PNG
@@ -628,11 +851,28 @@ generateText:
   title: Text Generation
 image:
   load_error: '[Image error: {{error}}]'
+imageChatContext:
+  defaultPrompt: Summarize this conversation as presentation slide images, split into an appropriate number of slides for clarity
+  error:
+    emptyChat: This chat has no messages
+    loadFailed: Failed to load the chat history. Please try again
+  label: Reference chat history (optional)
+  loadMore: Load more
+  messageCount: ({{n}} messages)
+  noChats: No chat history
+  remove: Remove reference
+  select: Select chat history
+  selectChat: Select a chat to reference
 inputs:
   attachment: Attachment
   model: Model
   reasoning: Extended thinking
   setting: Setting
+integration:
+  back: Back to the page
+  checking: Checking the link status...
+  retry: Link again
+
 landing:
   alert:
     description: >-

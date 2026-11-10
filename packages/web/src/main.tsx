@@ -47,6 +47,13 @@ import UseCaseBuilderSamplesPage from './pages/useCaseBuilder/UseCaseBuilderSamp
 import UseCaseBuilderMyUseCasePage from './pages/useCaseBuilder/UseCaseBuilderMyUseCasePage.tsx';
 import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
 import GenerateDiagramPage from './pages/GenerateDiagramPage.tsx';
+import {
+  backlogEnabled,
+  BACKLOG_CALLBACK_PATHNAME,
+  BACKLOG_PATHNAME,
+} from './hooks/useBacklog';
+import BacklogCallbackPage from './pages/BacklogCallbackPage';
+import BacklogPage from './pages/BacklogPage';
 import WriterPage from './pages/WriterPage.tsx';
 import useUseCases from './hooks/useUseCases';
 import { Toaster } from 'sonner';
@@ -227,6 +234,18 @@ const routes: RouteObject[] = [
     ? {
         path: '/research',
         element: <ResearchAgentPage />,
+      }
+    : null,
+  backlogEnabled
+    ? {
+        path: BACKLOG_CALLBACK_PATHNAME,
+        element: <BacklogCallbackPage />,
+      }
+    : null,
+  backlogEnabled
+    ? {
+        path: BACKLOG_PATHNAME,
+        element: <BacklogPage />,
       }
     : null,
   agentBuilderEnabled

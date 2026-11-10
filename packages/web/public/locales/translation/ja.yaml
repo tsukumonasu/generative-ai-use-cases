@@ -127,6 +127,229 @@ auth:
   loading: 読み込み中...
   login: ログイン
   title: Generative AI Use Cases on AWS
+backlog:
+  callback_completing: Backlog との連携を完了しています...
+  callback_failed: Backlog との連携を完了できませんでした。もう一度お試しください。
+  callback_linked: Backlog と連携しました。Backlog のページで利用できます。
+  callback_title: Backlog と連携
+  compose:
+    another: 続けて作る
+    assignee: 担当者
+    comment: コメント
+    comment_added: コメントを投稿しました。
+    comment_duplicate: 同じコメントを少し前に投稿済みだったので、二重には投稿していません。
+    comment_help: 過去の会話や Claude Code のログから、課題の進捗コメントを AI が下書きします。前回の自分のコメントより後の内容だけを使い、重ならないようにします。全文を確認してから「投稿する」を押してください。状態・担当者・期限は変えません。
+    comment_instead: この課題にコメントする
+    comment_request_label: 追加の指示（任意）
+    comment_request_placeholder: 例：つまずいた点を詳しく書いて
+    copy_help: 前回と同じ種類の作業を、前の課題と同じ形で起票します。前の課題を選び、今回変わる点を書いてください。
+    copy_request_label: 今回変わる点
+    copy_request_placeholder: 例：期限を月末に変更する
+    defaulted: 既定値
+    defaults_help: 「既定値」の項目は指示がなかったので、担当者は自分、開始日は今日、優先度は中、期限は空欄にしています。必要なら変えてください。
+    description: 詳細
+    document_added: ドキュメントを作成しました。
+    document_content: 本文
+    document_duplicate: 同じ題名のドキュメントを少し前に作成済みだったので、二重には作成していません。
+    document_link_comment: 課題に残すコメント
+    document_link_comment_default: ドキュメント「{{title}}」を作成しました。
+    document_link_comment_help: コメントの最後に、作成したドキュメントの URL を付けて投稿します。
+    document_link_failed: ドキュメントは作成しましたが、{{key}} へのコメントに失敗しました。
+    document_link_issue: リンクを残す課題（任意）
+    document_linked: '{{key}} にリンクをコメントしました'
+    document_parent: 置き場所
+    document_parent_top: いちばん上
+    document_request_label: 依頼・メモ（任意）
+    document_title: 題名
+    document_update_note: Backlog のドキュメントは GenU から更新できません。直すときは Backlog の画面で編集してください。
+    draft: 下書きを作る
+    draft_failed: 下書きを作れませんでした。もう一度お試しください。
+    due_date: 期限日
+    edit: 編集
+    failed: Backlog に登録できませんでした。
+    find: 探す
+    forbidden: Backlog の権限がないため、できませんでした。
+    format_backlog: Backlog 記法
+    format_markdown: Markdown
+    in_progress_failed: 状態を「処理中」にできませんでした。Backlog の画面で変えてください。
+    in_progress_note: このプロジェクトでは、課題を登録したあと、状態を自動で「処理中」にします。
+    issue_added: 課題を登録しました。
+    issue_duplicate: 同じ件名の課題を少し前に登録済みだったので、二重には登録していません。
+    issue_key: 課題キー
+    issue_key_invalid: 課題キーの形が正しくありません（例：PROJ-42）。
+    issue_key_placeholder: 例：PROJ-42
+    issue_type: 種別
+    knowledge_help: 開発の会話やログから、うまくいった方法やつまずいた点をドキュメントにまとめます。関係する課題にリンクを残せます。
+    knowledge_request_placeholder: 例：リリースで引っかかった点を、次の人向けにまとめて
+    last_comment: '前回の自分のコメント: {{time}}'
+    load_issue: 読み込む
+    minutes_help: 会議の文字起こしやメモ（ファイル・過去の会話）から議事録を作り、プロジェクトのドキュメントとして登録します。
+    minutes_request_placeholder: 例：11/8 の週次定例の議事録
+    new_help: 一言の依頼や、過去の会話・ファイルから、AI が課題の下書きを作ります。全項目を確認・修正してから「登録する」を押してください。
+    no_last_comment: この課題には、まだ自分のコメントがありません。
+    not_found: Backlog に見つかりませんでした。課題キーやプロジェクトを確認してください。
+    notes: 'AI からの確認事項: {{notes}}'
+    only_since_last: ログは前回のコメント（{{time}}）より後だけを使う
+    open: 開く
+    post_comment: 投稿する
+    post_help: 押すと {{key}} にコメントを投稿します。
+    preview: プレビュー
+    priority: 優先度
+    project: プロジェクト
+    redraft: 下書きを作り直す
+    register_document_and_link_help: 押すと {{project}} にドキュメントを作成し、{{key}} にリンクをコメントします。
+    register_document_help: 押すと {{project}} にドキュメントを作成します。
+    register_help: 押すと {{project}} に課題を登録します。
+    register_issue: 登録する
+    relate_failed: 関連付けができませんでした。Backlog の画面で設定してください。
+    relate_to_this: 関連付けて新しく作る
+    related: '{{key}} と関連付けました。'
+    related_issue: 関連課題（任意）
+    related_issue_placeholder: 例：PROJ-123
+    request_label: 依頼・メモ（一言でも可）
+    request_placeholder: 例：Web アプリの依存パッケージを更新する課題を追加して
+    review: 登録する内容の確認
+    set_in_progress: 状態を「処理中」にしました。
+    similar_help: 似た課題があります。既存の課題の続きなら、その課題にコメントできます。新しく作る場合は関連付けられます。
+    source:
+      characters: '{{n}} 文字'
+      choose_chat: 過去の会話を選ぶ
+      choose_file: ファイルを選ぶ
+      hint: ファイルは、テキスト・Markdown・文字起こし（.vtt）・Claude Code の会話ログ（~/.claude/projects/ の .jsonl）に対応しています。
+      label: 元にするもの
+      log_empty: このログには使える発言がありません。前回のコメントより後の発言がない可能性があります。
+      log_messages: 'Claude Code のログ（{{n}} 件の発言）'
+      too_large: ファイルが大きすぎます（50 MB まで）。
+    start_date: 開始日
+    summary: 件名
+    template_label: 前の課題（課題キーかキーワード）
+    template_placeholder: 例：PROJ-12、月次レポート
+    unassigned: 未設定
+  draft:
+    comment_sections: 決めた構成|追加した機能（PR 番号・コミット付き）|手作業でやったこと|つまずいた点と対処（次回のため）|画面で確認できたこと|残っていること
+    issue_sections: 概要|背景|やること
+    knowledge_sections: 結論|うまくいった方法|つまずいた点と対処|手順・設定|関連する課題・資料
+    language: Japanese
+    minutes_sections: 開催の概要|参加者|決まったこと|ネクストアクション（担当・期限）|元資料
+    report_sections: 完了したこと|進めたこと|次にやること（期限が近い課題）|止まっている課題
+  link: Backlog と連携
+  link_failed: Backlog との連携を開始できませんでした。
+  page:
+    activities:
+      button: 活動まとめ
+      commented: 'コメント {{n}} 件'
+      completed: 完了
+      copy: テキストでコピー
+      created: 追加
+      empty: この期間に、課題への活動はありません。
+      heading: '活動まとめ（{{since}}〜{{today}}）'
+      help: 選んだ日から今日までに、自分が課題に対して行ったこと（追加・更新・コメント・完了）を課題ごとにまとめます。週次 MTG の報告に使えます。
+      report: MTG 用の文章にする
+      report_help: 活動と、期限が近い課題・止まっている課題から、週次 MTG 用の報告文を AI が作ります。Backlog には何も書き込みません。
+      separator: 、
+      show: 表示
+      since: いつから（前回の MTG の日など）
+      status_now: '現在: {{status}}'
+      summary: '課題 {{issues}} 件（追加 {{created}}・完了 {{completed}}・コメント {{comments}}）'
+      truncated: 活動が多いため、新しいものから 500 件だけをまとめています。
+      updated: '更新: {{fields}}'
+    description: あなたの Backlog アカウントで、今週のタスク・未完了の課題・自分の活動・ガントチャートを確認します。
+    fields:
+      actualHours: 実績時間
+      assigner: 担当者
+      attachment: 添付ファイル
+      component: カテゴリー
+      description: 詳細
+      estimatedHours: 予定時間
+      issueType: 種別
+      limitDate: 期限
+      milestone: マイルストーン
+      parentIssue: 親課題
+      priority: 優先度
+      resolution: 完了理由
+      startDate: 開始日
+      status: 状態
+      summary: 件名
+    gantt:
+      button: ガントチャート
+      closed: 完了した課題も表示
+      earlier: '表示期間より前が期限の未完了課題（{{n}} 件）'
+      empty: この期間に表示する課題はありません。
+      heading: 'ガントチャート（{{start}}〜{{end}}）'
+      help: '追加した人が担当の課題（完了以外）を、開始日から期限日までの棒で表示します。人は名前・ログイン ID・メールアドレスで検索して、1 人ずつ追加できます（最大 {{n}} 人）。追加した人はこのブラウザに保存され、次に開いたときも表示されます。棒を押すと Backlog で課題を開きます。'
+      issue: 課題
+      later: '表示期間より後に始まる未完了課題が {{n}} 件あります。'
+      legend_closed: 完了
+      legend_due_only: 期限日だけ（開始日なし）
+      legend_no_due: 期限日なし（今日まで表示）
+      legend_overdue: 期限切れ
+      legend_status: 色は Backlog の状態の色です。
+      legend_today: 今日
+      members_failed: メンバーを取得できませんでした。追加済みの人の課題は表示できます。
+      next: 次の期間へ
+      no_match: 一致する人がいません。
+      no_people: 表示する人を追加してください。
+      none: なし
+      people: 表示する人
+      people_limit: '一度に表示できるのは {{n}} 人までです'
+      people_placeholder: 名前・ID・メールアドレスで検索して追加
+      person_heading: '{{name}}（{{n}} 件）'
+      person_myself: '{{name}}（自分）'
+      prev: 前の期間へ
+      project: プロジェクト
+      project_all: すべてのプロジェクト
+      project_option: '{{key}}（{{name}}）'
+      reload: 最新の状態に更新
+      remove: '{{name}} を外す'
+      span: 表示期間
+      span_weeks: '{{n}} 週間'
+      start: 表示の開始日
+      this_week: 今週
+      title_dates: '開始日: {{start}} / 期限日: {{due}}'
+      title_status: '状態: {{status}} / 担当: {{assignee}}'
+      truncated: 課題が多いため、一部だけを表示しています。人数を減らすか、プロジェクトを絞ってください。
+      undated: '開始日も期限日もない未完了課題（{{n}} 件）'
+    link_required: Backlog と連携すると、ここで今週のタスクなどを確認できます。
+    load_failed: Backlog から取得できませんでした。しばらくしてから、もう一度お試しください。
+    loading: Backlog から取得しています...
+    not_allowed: あなたのアカウントでは Backlog 連携が許可されていません。
+    open_tasks:
+      button: 自分の未完了課題
+      empty: 未完了の課題はありません。
+      heading: '自分の未完了課題（{{n}} 件）'
+      help: '自分が担当で「完了」以外の課題すべてです。プロジェクトごとに、期限の近い順に並べています。{{days}} 日以上更新のない課題に「止まっている」を付けています。'
+    project_heading: '{{name}}（{{n}} 件）'
+    task:
+      due: '期限 {{date}}'
+      no_due: 期限なし
+      priority: '優先度 {{name}}'
+      stalled: 止まっている
+    title: Backlog
+    truncated: '課題が多いため、期限の近い {{n}} 件だけを表示しています。'
+    weekly_tasks:
+      button: 今週のタスク
+      empty_overdue: 期限切れの課題はありません。
+      empty_this_week: 今週が期限の課題はありません。
+      heading: '今週のタスク（{{start}}〜{{end}}）'
+      help: 自分が担当で「完了」以外の課題のうち、期限切れのものと、今週（月〜日）が期限のものです。期限のない課題は表示しません。
+      overdue: '期限切れ（{{n}} 件）'
+      this_week: '今週が期限（{{n}} 件）'
+    write:
+      comment: 進捗をコメントする
+      copy_issue: 前の課題と同じ形で作る
+      help: AI が下書きを作り、内容を確認してから登録します。登録は「登録する」「投稿する」を押したときだけです。
+      knowledge: 知見をドキュメントにまとめる
+      minutes: 議事録をドキュメントにする
+      new_issue: 課題を作る
+  relink: 再連携
+  setting_help: Backlog のページが、あなたの Backlog アカウントの権限で Backlog を使えるようにします。課題・コメント・ドキュメントの登録は、Backlog のページであなたがボタンを押したときだけ行います。
+  setting_name: Backlog 連携
+  status_error: 連携状態を取得できませんでした。管理者に連絡してください。
+  status_expired: 連携が切れています。再連携してください。
+  status_linked: 連携済み
+  status_linked_as: '連携済み（{{name}}）'
+  status_not_linked: 未連携
+  unlink: 連携を解除
 chart:
   data_limit_exceeded: チャートデータが表示上限を超えています。データポイント数（上限10,000）またはシリーズ数（上限50）を削減してください。
   download_png: PNGをダウンロード
@@ -529,11 +752,28 @@ generateText:
   title: 文章生成
 image:
   load_error: '[画像エラー: {{error}}]'
+imageChatContext:
+  defaultPrompt: この会話の内容を、プレゼン資料として使えるスライド画像にまとめてください。伝わりやすさを重視して、適切な枚数に分割してください
+  error:
+    emptyChat: このチャットにはメッセージがありません
+    loadFailed: チャット履歴の読み込みに失敗しました。再度お試しください
+  label: チャット履歴の参照 (任意)
+  loadMore: さらに読み込む
+  messageCount: ({{n}} 件のメッセージ)
+  noChats: チャット履歴がありません
+  remove: 参照を解除
+  select: チャット履歴を選択
+  selectChat: 参照するチャットを選択
 inputs:
   attachment: 添付ファイル
   model: モデル
   reasoning: 深く考える
   setting: 設定
+integration:
+  back: 元のページに戻る
+  checking: 連携状態を確認しています...
+  retry: もう一度連携する
+
 landing:
   alert:
     description: >-

@@ -21,6 +21,8 @@ import {
 import useChatList from '../hooks/useChatList';
 import useTranscribeLanguageLabels from '../hooks/useTranscribeLanguageLabels';
 import DialogConfirmDeleteAllChats from '../components/DialogConfirmDeleteAllChats';
+import useBacklog from '../hooks/useBacklog';
+import useIntegrationLink from '../hooks/useIntegrationLink';
 
 const ragEnabled: boolean = import.meta.env.VITE_APP_RAG_ENABLED === 'true';
 const ragKnowledgeBaseEnabled: boolean =
@@ -68,6 +70,11 @@ const Setting = () => {
   const localVersion = getLocalVersion();
   const hasUpdate = getHasUpdate();
   const closedPullRequests = getClosedPullRequests();
+  // Backlog account linking. Same flow as the Backlog page: the consent comes
+  // back to this page.
+  const backlog = useBacklog();
+  const { linking: backlogLinking, startLink: onClickLinkBacklog } =
+    useIntegrationLink('backlog', backlog);
   const {
     settingTranscribeLanguageOptions,
     setSettingTranscribeLanguageOptions,
@@ -242,6 +249,53 @@ const Setting = () => {
               {t('setting.items.delete_all_chats_button')}
             </Button>
           }></SettingItem>
+
+        {backlog.enabled && backlog.statusError && (
+          <SettingItem
+            name={t('backlog.setting_name')}
+            value={
+              <span className="text-red-500">{t('backlog.status_error')}</span>
+            }></SettingItem>
+        )}
+
+        {backlog.enabled && backlog.allowed && (
+          <SettingItem
+            name={t('backlog.setting_name')}
+            helpMessage={t('backlog.setting_help')}
+            value={
+              <div className="flex items-center gap-3">
+                <span className={backlog.expired ? 'text-red-500' : ''}>
+                  {backlog.linked
+                    ? backlog.userName
+                      ? t('backlog.status_linked_as', {
+                          name: backlog.userName,
+                        })
+                      : t('backlog.status_linked')
+                    : backlog.expired
+                      ? t('backlog.status_expired')
+                      : t('backlog.status_not_linked')}
+                </span>
+                {backlog.linked && backlog.applicationsUrl && (
+                  <a
+                    href={backlog.applicationsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center hover:underline">
+                    {t('backlog.unlink')}
+                    <PiArrowSquareOut className="text-base" />
+                  </a>
+                )}
+                <Button
+                  onClick={() => onClickLinkBacklog()}
+                  loading={backlogLinking}
+                  disabled={backlogLinking || backlog.isLoading}>
+                  {backlog.linked || backlog.expired
+                    ? t('backlog.relink')
+                    : t('backlog.link')}
+                </Button>
+              </div>
+            }></SettingItem>
+        )}
 
         <SettingItem
           name={t('setting.items.login_status')}

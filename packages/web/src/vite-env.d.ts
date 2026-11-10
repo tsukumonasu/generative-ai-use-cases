@@ -33,6 +33,8 @@ interface ImportMetaEnv {
   readonly VITE_APP_SPEECH_TO_SPEECH_MODEL_IDS: string;
   readonly VITE_APP_MCP_ENABLED: string;
   readonly VITE_APP_MCP_ENDPOINT: string;
+  // Backlog page. Unset when it is not deployed.
+  readonly VITE_APP_BACKLOG_ENABLED?: string;
   readonly VITE_APP_AGENT_CORE_ENABLED: string;
   readonly VITE_APP_AGENT_CORE_GENERIC_RUNTIME: string;
   readonly VITE_APP_AGENT_CORE_AGENT_BUILDER_ENABLED: string;

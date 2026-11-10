@@ -22,6 +22,7 @@ import {
   PiMicrophoneBold,
   PiTreeStructure,
   PiNotebook,
+  PiKanban,
   PiGraph,
   PiMagnifyingGlass,
 } from 'react-icons/pi';
@@ -36,6 +37,7 @@ import useInterUseCases from './hooks/useInterUseCases';
 import { MODELS } from './hooks/useModel';
 import useScreen from './hooks/useScreen';
 import { optimizePromptEnabled } from './hooks/useOptimizePrompt';
+import { backlogEnabled, BACKLOG_PATHNAME } from './hooks/useBacklog';
 import useUseCases from './hooks/useUseCases';
 import { useTranslation } from 'react-i18next';
 
@@ -265,6 +267,14 @@ const App: React.FC = () => {
           label: t('navigation.diagramGeneration'),
           to: '/diagram',
           icon: <PiTreeStructure />,
+          display: 'usecase' as const,
+        }
+      : null,
+    backlogEnabled
+      ? {
+          label: t('backlog.page.title'),
+          to: BACKLOG_PATHNAME,
+          icon: <PiKanban />,
           display: 'usecase' as const,
         }
       : null,
