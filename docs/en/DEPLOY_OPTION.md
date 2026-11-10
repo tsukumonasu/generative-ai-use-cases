@@ -978,6 +978,15 @@ This is enabled when you define one or more models in `videoGenerationModelIds`.
 For `videoGenerationModelIds`, please refer to [Changing Amazon Bedrock Models](#change-amazon-bedrock-models).
 For default values, please refer to [packages/cdk/lib/stack-input.ts](/packages/cdk/lib/stack-input.ts).
 
+### Enabling Image / Video Generation with Gemini and GPT Image
+
+Images and videos can also be generated with models outside Amazon Bedrock: Google's Gemini API (image and video generation / editing, authenticated with Workload Identity Federation) and OpenAI's Images API (GPT Image). Both are disabled by default; the Lambda functions and the menu items are created only when the parameters below are set.
+
+- Gemini: set `geminiWifAudience`, `geminiServiceAccountEmail` and `geminiProjectId`
+- GPT Image: set `openAiApiKey`
+
+For the Google Cloud setup and all parameters, please refer to [Deploying Image / Video Generation (Gemini / GPT Image)](./DEPLOY_GEMINI_GPT_IMAGE.md).
+
 ### Enabling Video Analysis Use Case
 
 In the video analysis use case, you input video image frames and text to have the LLM analyze the image content.

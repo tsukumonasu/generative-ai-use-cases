@@ -997,6 +997,15 @@ const envs: Record<string, Partial<StackInput>> = {
 `videoGenerationModelIds` に関しては [Amazon Bedrock のモデルを変更する](#amazon-bedrock-のモデルを変更する) をご参照ください。
 デフォルト値は [packages/cdk/lib/stack-input.ts](/packages/cdk/lib/stack-input.ts) をご参照ください。
 
+### Gemini / GPT Image による画像・動画生成の有効化
+
+Amazon Bedrock 以外のモデルでも画像・動画を生成できます。Google の Gemini API (画像・動画の生成と編集、Workload Identity Federation で認証) と OpenAI の Images API (GPT Image) に対応しています。どちらも既定では無効で、以下のパラメータを設定した場合のみ Lambda 関数とメニューが作成されます。
+
+- Gemini: `geminiWifAudience`、`geminiServiceAccountEmail`、`geminiProjectId` を設定
+- GPT Image: `openAiApiKey` を設定
+
+Google Cloud 側のセットアップ手順と全パラメータは [画像・動画生成 (Gemini / GPT Image) のデプロイ](./DEPLOY_GEMINI_GPT_IMAGE.md) を参照してください。
+
 ### 映像分析ユースケースの有効化
 
 映像分析ユースケースでは、映像の画像フレームとテキストを入力して画像の内容を LLM に分析させます。
