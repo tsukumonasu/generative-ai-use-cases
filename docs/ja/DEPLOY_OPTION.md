@@ -976,6 +976,16 @@ const envs: Record<string, Partial<StackInput>> = {
 }
 ```
 
+### Google Workspace MCP の有効化 (Agent Builder)
+
+Agent Builder のエージェントが、利用者本人の Google アカウントの権限で Google 公式の Google Workspace MCP サーバー (Gmail・カレンダー・ドライブ・ドキュメント・スプレッドシート・スライド・Chat など) を使えるようにします。あわせて、設定済みのエージェント「Google Workspace MCP」のメニューと、PowerPoint・Excel・Word・PDF を作る組み込みツール `office-documents` が使えるようになります。既定では無効で、`googleWorkspaceMcpEnabled` を `true` にした場合のみワークロード ID・API・メニューが作成されます。
+
+- `googleWorkspaceMcpEnabled`: `true` で有効化 (`agentBuilderEnabled` も必要)
+- `googleWorkspaceCredentialProviderName`: 手作業で作成した AgentCore Identity の OAuth2 クレデンシャルプロバイダーの名前
+- `googleWorkspaceAllowedUsers`: 連携を許可する利用者 (`cognito:username`)。`["*"]` で全員
+
+Google Cloud 側の設定とクレデンシャルプロバイダーの作成手順は [Google Workspace MCP](./GOOGLE_WORKSPACE_MCP.md) を参照してください。
+
 ### 音声チャットユースケースの有効化
 
 > [!NOTE]

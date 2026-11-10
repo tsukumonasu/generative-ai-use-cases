@@ -957,6 +957,16 @@ const envs: Record<string, Partial<StackInput>> = {
 }
 ```
 
+### Enabling Google Workspace MCP (Agent Builder)
+
+Agent Builder agents can use Google's official Google Workspace MCP servers (Gmail, Calendar, Drive, Docs, Sheets, Slides, Chat and more) with the permissions of each user's own Google account. This also adds a ready-made "Google Workspace MCP" agent to the menu and the built-in `office-documents` tools that create PowerPoint, Excel, Word and PDF files. It is disabled by default; the workload identity, the API and the menu items are created only when `googleWorkspaceMcpEnabled` is `true`.
+
+- `googleWorkspaceMcpEnabled`: `true` to enable (`agentBuilderEnabled` is required as well)
+- `googleWorkspaceCredentialProviderName`: name of the AgentCore Identity OAuth2 credential provider you create by hand
+- `googleWorkspaceAllowedUsers`: users who may link Google (`cognito:username`); `["*"]` for everyone
+
+For the Google Cloud setup and how to create the credential provider, please refer to [Google Workspace MCP](./GOOGLE_WORKSPACE_MCP.md).
+
 ### Enabling Voice Chat Use Case
 
 > [!NOTE]
