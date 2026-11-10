@@ -85,6 +85,204 @@
         "category": "Search",
         "description": "Web search and research capabilities powered by Tavily"
       }
+    },
+    "google-drive": {
+      "url": "https://drivemcp.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/drive.readonly",
+          "https://www.googleapis.com/auth/drive.file"
+        ]
+      },
+      "toolPrefix": "google_drive",
+      "allowedTools": [
+        "search_files",
+        "list_recent_files",
+        "get_file_metadata",
+        "read_file_content",
+        "create_file"
+      ],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Search and read your own Google Drive files, and create new files (cannot change, share or delete existing files). Link Google in Settings first."
+      }
+    },
+    "google-gmail": {
+      "url": "https://gmailmcp.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/gmail.readonly",
+          "https://www.googleapis.com/auth/gmail.compose"
+        ]
+      },
+      "toolPrefix": "google_gmail",
+      "allowedTools": [
+        "search_threads",
+        "get_thread",
+        "get_message",
+        "list_labels",
+        "list_drafts",
+        "create_draft"
+      ],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Search and read your own Gmail and create drafts (cannot send). Link Google in Settings first."
+      }
+    },
+    "google-calendar": {
+      "url": "https://calendarmcp.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
+          "https://www.googleapis.com/auth/calendar.events",
+          "https://www.googleapis.com/auth/calendar.events.freebusy"
+        ]
+      },
+      "toolPrefix": "google_calendar",
+      "allowedTools": [
+        "list_calendars",
+        "list_events",
+        "get_event",
+        "search_events",
+        "suggest_time",
+        "create_event"
+      ],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Look up your Google Calendar events, find free time and add events (cannot change, delete or answer events). Link Google in Settings first."
+      }
+    },
+    "google-docs": {
+      "url": "https://docsmcp.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/drive.readonly",
+          "https://www.googleapis.com/auth/documents"
+        ]
+      },
+      "toolPrefix": "google_docs",
+      "allowedTools": ["read_doc", "update_doc"],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Read and edit Google Docs documents. Link Google in Settings first."
+      }
+    },
+    "google-sheets": {
+      "url": "https://sheetsmcp.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/drive.readonly",
+          "https://www.googleapis.com/auth/spreadsheets"
+        ]
+      },
+      "toolPrefix": "google_sheets",
+      "allowedTools": [
+        "get_spreadsheet",
+        "get_values",
+        "update_values",
+        "update_formulas",
+        "insert_dimension",
+        "update_spreadsheet"
+      ],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Read and edit Google Sheets spreadsheets. Link Google in Settings first."
+      }
+    },
+    "google-slides": {
+      "url": "https://slidesmcp.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/drive.readonly",
+          "https://www.googleapis.com/auth/presentations"
+        ]
+      },
+      "toolPrefix": "google_slides",
+      "allowedTools": [
+        "read_presentation",
+        "read_slide_page",
+        "update_presentation"
+      ],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Read and edit Google Slides presentations. Link Google in Settings first."
+      }
+    },
+    "google-chat": {
+      "url": "https://chatmcp.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/chat.spaces.readonly",
+          "https://www.googleapis.com/auth/chat.memberships.readonly",
+          "https://www.googleapis.com/auth/chat.messages.readonly"
+        ]
+      },
+      "toolPrefix": "google_chat",
+      "allowedTools": [
+        "search_conversations",
+        "search_messages",
+        "list_messages",
+        "list_memberships"
+      ],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Search and read your Google Chat messages (read-only, cannot post). Link Google in Settings first."
+      }
+    },
+    "google-people": {
+      "url": "https://people.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/userinfo.profile",
+          "https://www.googleapis.com/auth/directory.readonly",
+          "https://www.googleapis.com/auth/contacts.readonly"
+        ]
+      },
+      "toolPrefix": "google_people",
+      "allowedTools": [
+        "get_user_profile",
+        "search_directory_people",
+        "search_contacts"
+      ],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Look up colleagues in the company directory and your contacts (read-only). Link Google in Settings first."
+      }
+    },
+    "google-workspace-search": {
+      "url": "https://workspacemcp.googleapis.com/mcp/v1",
+      "auth": {
+        "type": "google-oauth",
+        "scopes": [
+          "https://www.googleapis.com/auth/gmail.readonly",
+          "https://www.googleapis.com/auth/drive.readonly",
+          "https://www.googleapis.com/auth/calendar.readonly",
+          "https://www.googleapis.com/auth/chat.messages.readonly",
+          "https://www.googleapis.com/auth/chat.spaces.readonly",
+          "https://www.googleapis.com/auth/chat.memberships.readonly"
+        ]
+      },
+      "toolPrefix": "google_search",
+      "allowedTools": ["search_corpus"],
+      "metadata": {
+        "category": "Google Workspace",
+        "description": "Search across Drive, Gmail, Calendar and Chat at once (read-only). Link Google in Settings first."
+      }
+    },
+    "office-documents": {
+      "builtin": "office-documents",
+      "metadata": {
+        "category": "Utility",
+        "description": "Create PowerPoint, Excel and Word files and PDFs (download links). With google-drive, also save them to Google Drive as Slides, Sheets or Docs."
+      }
     }
   }
 }

@@ -13,8 +13,16 @@ import {
   AgentCore,
   UseCaseBuilder,
 } from './construct';
-import { loadMCPConfig, extractSafeMCPConfig } from './utils/mcp-config-loader';
+import {
+  loadMCPConfig,
+  extractSafeMCPConfig,
+  collectGoogleOAuthScopes,
+} from './utils/mcp-config-loader';
 import { CfnWebACLAssociation } from 'aws-cdk-lib/aws-wafv2';
+import {
+  GOOGLE_API_SCOPES,
+  GoogleWorkspace,
+} from './construct/google-workspace';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { ProcessedStackInput } from './stack-input';
@@ -290,6 +298,8 @@ export class GenerativeAiUseCasesStack extends Stack {
       knowledgeBaseDataSourceBucketName:
         props.knowledgeBaseDataSourceBucketName,
       dataSourceBucketName: rag?.dataSourceBucketName,
+      // Google Workspace MCP: the monolith serves users' Google tokens
+      userTokenVaultEnabled: params.googleWorkspaceMcpEnabled,
     });
 
     // WAF
@@ -321,7 +331,9 @@ export class GenerativeAiUseCasesStack extends Stack {
         '../lambda-python/generic-agent-core-runtime/mcp-configs/agent-builder/mcp.json'
       )
     );
-    const safeMCPConfig = extractSafeMCPConfig(mcpServers);
+    const safeMCPConfig = extractSafeMCPConfig(mcpServers, {
+      googleWorkspaceEnabled: params.googleWorkspaceMcpEnabled,
+    });
 
     // MCP
     let mcpEndpoint: string | null = null;
@@ -419,6 +431,8 @@ export class GenerativeAiUseCasesStack extends Stack {
         : undefined,
       // Frontend
       hiddenUseCases: params.hiddenUseCases,
+      // Google Workspace MCP
+      googleWorkspaceEnabled: params.googleWorkspaceMcpEnabled,
       // Custom Domain
       cert: props.cert,
       hostName: params.hostName,
@@ -463,6 +477,37 @@ export class GenerativeAiUseCasesStack extends Stack {
     // only answers the deployed frontend unless a developer asks otherwise.
     allowedOrigins = [...allowedOrigins, ...params.allowedDevOrigins];
     api.apiHandler.addEnvironment('ALLOWED_ORIGINS', allowedOrigins.join(','));
+
+    // Google Workspace MCP: per-user Google OAuth through the AgentCore
+    // Identity Token Vault. Created only when googleWorkspaceMcpEnabled.
+    if (params.googleWorkspaceMcpEnabled) {
+      new GoogleWorkspace(this, 'GoogleWorkspace', {
+        env: params.env,
+        api: api.api,
+        authorizer: api.authorizer,
+        apiHandler: api.apiHandler,
+        credentialProviderName: params.googleWorkspaceCredentialProviderName,
+        allowedUsers: params.googleWorkspaceAllowedUsers,
+        // Consent covers every Google server either runtime may connect to,
+        // and whatever the GenU API does itself
+        scopes: [
+          ...new Set([
+            ...collectGoogleOAuthScopes(
+              mcpServers,
+              loadMCPConfig(
+                path.join(
+                  __dirname,
+                  '../lambda-python/generic-agent-core-runtime/mcp-configs/generic/mcp.json'
+                )
+              )
+            ),
+            ...GOOGLE_API_SCOPES,
+          ]),
+        ].sort(),
+        // Same list as CORS, so an origin added there is also a return URL
+        webOrigins: allowedOrigins,
+      });
+    }
 
     // Cfn Outputs
     new CfnOutput(this, 'Region', {
@@ -625,6 +670,14 @@ export class GenerativeAiUseCasesStack extends Stack {
     new CfnOutput(this, 'McpServersConfig', {
       value: safeMCPConfig,
     });
+
+    // Google Workspace MCP (only when enabled, so the outputs are unchanged
+    // for deployments without it)
+    if (params.googleWorkspaceMcpEnabled) {
+      new CfnOutput(this, 'GoogleWorkspaceEnabled', {
+        value: 'true',
+      });
+    }
 
     // Additional outputs for backend development
     new CfnOutput(this, 'TableName', {

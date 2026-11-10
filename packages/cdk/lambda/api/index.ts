@@ -106,6 +106,8 @@ import { router as agentBuilderRouter } from './routes/agentBuilder';
 import { router as transcribeRouter } from './routes/transcribe';
 import { router as meetingMinutesRouter } from './routes/meetingMinutes';
 import { router as speechToSpeechRouter } from './routes/speechToSpeech';
+// Google Workspace MCP account linking (GoogleWorkspace construct)
+import { router as googleWorkspaceRouter } from './routes/googleWorkspace';
 
 // Mount routes
 app.use('/predict', predictRouter);
@@ -124,6 +126,8 @@ app.use('/agents', agentBuilderRouter);
 app.use('/transcribe', transcribeRouter);
 app.use('/meeting-minutes', meetingMinutesRouter);
 app.use('/speech-to-speech', speechToSpeechRouter);
+// Google Workspace MCP account linking (GoogleWorkspace construct)
+app.use('/google-workspace', googleWorkspaceRouter);
 
 // Error handler
 app.use(

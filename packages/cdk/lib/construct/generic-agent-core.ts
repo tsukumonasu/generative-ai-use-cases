@@ -44,6 +44,9 @@ export interface GenericAgentCoreProps {
   gatewayArns?: string[];
   // The text generation models of this deployment, for their output token limits
   modelIds?: string[];
+  // Google Workspace MCP: the office-documents tools read back files of
+  // earlier requests to convert them to PDF or save them to Drive
+  googleWorkspaceEnabled?: boolean;
 }
 
 interface RuntimeResources {
@@ -58,6 +61,7 @@ export class GenericAgentCore extends Construct {
   private readonly agentBuilderRuntimeConfig: AgentCoreRuntimeConfig;
   private readonly resources: RuntimeResources;
   private readonly gatewayArns?: string[];
+  private readonly googleWorkspaceEnabled: boolean;
 
   // Security Group ID that requires manual cleanup after AgentCore Runtime deletion
   // Used for CloudFormation Output to remind users of manual cleanup tasks
@@ -77,6 +81,7 @@ export class GenericAgentCore extends Construct {
     } = props;
 
     this.gatewayArns = gatewayArns;
+    this.googleWorkspaceEnabled = props.googleWorkspaceEnabled ?? false;
 
     // Create bucket first
     this._fileBucket = this.createFileBucket();
@@ -390,6 +395,11 @@ export class GenericAgentCore extends Construct {
     );
 
     this._fileBucket.grantWrite(role);
+    if (this.googleWorkspaceEnabled) {
+      // The office-documents tools read back files of earlier requests (by
+      // their S3 URL) to convert them to PDF or save them to Drive
+      this._fileBucket.grantRead(role, 'agentcore/*');
+    }
   }
 
   // Public getters - all non-optional

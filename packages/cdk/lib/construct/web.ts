@@ -71,6 +71,8 @@ export interface WebProps {
   readonly agentCoreRegion?: string;
   readonly researchAgentEnabled: boolean;
   readonly researchAgentRuntime?: AgentCoreConfiguration;
+  // Google Workspace MCP
+  readonly googleWorkspaceEnabled?: boolean;
   readonly brandingConfig?: {
     logoPath?: string;
     title?: string;
@@ -319,6 +321,11 @@ export class Web extends Construct {
         ),
         VITE_APP_BRANDING_LOGO_PATH: props.brandingConfig?.logoPath ?? '',
         VITE_APP_BRANDING_TITLE: props.brandingConfig?.title ?? '',
+        // Only set when enabled (the frontend treats a missing value as off),
+        // so deployments without Google Workspace build as before
+        ...(props.googleWorkspaceEnabled
+          ? { VITE_APP_GOOGLE_WORKSPACE_ENABLED: 'true' }
+          : {}),
       },
     });
     // Enhance computing resources

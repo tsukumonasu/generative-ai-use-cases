@@ -28,6 +28,7 @@ export class AgentCoreStack extends Stack {
         agentCoreVpcId: params.agentCoreVpcId,
         agentCoreSubnetIds: params.agentCoreSubnetIds,
         gatewayArns: params.agentCoreGatewayArns ?? undefined,
+        googleWorkspaceEnabled: params.googleWorkspaceMcpEnabled,
       });
 
       // Outputs read by GenerativeAiUseCasesStack via StackOutputs, also across Regions (only if values exist)

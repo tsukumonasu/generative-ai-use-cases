@@ -188,6 +188,18 @@ const baseStackInputSchema = z.object({
   guardrailEnabled: z.boolean().default(false),
   // Usecase builder
   useCaseBuilderEnabled: z.boolean().default(true),
+  // Google Workspace MCP. Each user links their own Google account; the
+  // AgentCore runtime then calls Google's MCP servers with that user's token.
+  // See docs/en/GOOGLE_WORKSPACE_MCP.md.
+  // Nothing is created unless googleWorkspaceMcpEnabled is explicitly true.
+  googleWorkspaceMcpEnabled: z.boolean().default(false),
+  // Name of the AgentCore Identity OAuth2 credential provider (GoogleOauth2
+  // vendor). It is created by hand with the CLI so that the client secret
+  // never enters cdk.json, git or the CloudFormation template.
+  googleWorkspaceCredentialProviderName: z.string().default(''),
+  // Users (cognito:username, not email) who may link Google. ["*"] allows every
+  // signed-in user. No one can while this is empty.
+  googleWorkspaceAllowedUsers: z.array(z.string()).default([]),
   // Flows
   flows: z
     .array(
@@ -268,6 +280,16 @@ export const stackInputSchema = baseStackInputSchema
       message:
         'Both VPC ID and Subnet IDs must be provided together for AgentCore network configuration',
       path: ['agentCoreVpcId'],
+    }
+  )
+  .refine(
+    (data) =>
+      !data.googleWorkspaceMcpEnabled ||
+      data.googleWorkspaceCredentialProviderName.length > 0,
+    {
+      message:
+        'googleWorkspaceCredentialProviderName is required when googleWorkspaceMcpEnabled is true',
+      path: ['googleWorkspaceCredentialProviderName'],
     }
   );
 

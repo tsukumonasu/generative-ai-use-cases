@@ -187,4 +187,6 @@ export type AgentCoreRuntimeRequest = {
   mcpServers?: MCPServerReference[]; // Changed to string array
   agentId?: string; // Agent ID for logging/tracking
   codeExecutionEnabled?: boolean; // Code execution setting
+  // Google access token for the Google Workspace MCP servers
+  googleAccessToken?: string;
 };

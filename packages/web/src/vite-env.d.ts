@@ -45,6 +45,8 @@ interface ImportMetaEnv {
   readonly VITE_APP_BRANDING_LOGO_PATH: string;
   readonly VITE_APP_BRANDING_TITLE: string;
   readonly VITE_APP_MCP_SERVERS_CONFIG: string;
+  // Google Workspace MCP. Unset when it is not deployed.
+  readonly VITE_APP_GOOGLE_WORKSPACE_ENABLED?: string;
 }
 
 interface ImportMeta {

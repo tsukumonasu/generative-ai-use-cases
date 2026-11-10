@@ -12,6 +12,9 @@ export type AgentCoreRequest = StrandsRequest & {
   mcp_servers?: string[]; // Changed to string array
   session_id?: string;
   code_execution_enabled?: boolean;
+  // Google access token of the invoking user, used only for the Google
+  // Workspace MCP servers in mcp_servers (never logged or stored)
+  google_access_token?: string;
 };
 
 export type AgentCoreStreamResponse = StrandsStreamEvent;
